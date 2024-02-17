@@ -16,6 +16,7 @@ namespace PROJECT_PRN231.Models
         {
         }
 
+        public virtual DbSet<Answer> Answers { get; set; } = null!;
         public virtual DbSet<Exam> Exams { get; set; } = null!;
         public virtual DbSet<ExamQuestion> ExamQuestions { get; set; } = null!;
         public virtual DbSet<Question> Questions { get; set; } = null!;
@@ -33,36 +34,41 @@ namespace PROJECT_PRN231.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Answer>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("Answer");
+
+                entity.Property(e => e.AnswerId).HasColumnName("answer_id");
+
+                entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
+
+                entity.Property(e => e.QuestionId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("question_id");
+
+                entity.Property(e => e.Value).HasColumnName("value");
+            });
+
             modelBuilder.Entity<Exam>(entity =>
             {
                 entity.ToTable("Exam");
 
-                entity.Property(e => e.ExamId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("exam_id");
+                entity.Property(e => e.ExamId).HasColumnName("exam_id");
 
                 entity.Property(e => e.Duration).HasColumnName("duration");
-
-                entity.Property(e => e.EndTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("end_time");
 
                 entity.Property(e => e.ExamName)
                     .HasMaxLength(255)
                     .HasColumnName("exam_name");
-
-                entity.Property(e => e.StartTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("start_time");
             });
 
             modelBuilder.Entity<ExamQuestion>(entity =>
             {
                 entity.ToTable("ExamQuestion");
 
-                entity.Property(e => e.ExamQuestionId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("exam_question_id");
+                entity.Property(e => e.ExamQuestionId).HasColumnName("exam_question_id");
 
                 entity.Property(e => e.ExamId).HasColumnName("exam_id");
 
@@ -75,11 +81,7 @@ namespace PROJECT_PRN231.Models
             {
                 entity.ToTable("Question");
 
-                entity.Property(e => e.QuestionId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("question_id");
-
-                entity.Property(e => e.CorrectAnswer).HasColumnName("correct_answer");
+                entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.Property(e => e.DifficultyLevel).HasColumnName("difficulty_level");
 
@@ -88,9 +90,7 @@ namespace PROJECT_PRN231.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.UserId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("user_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
@@ -116,9 +116,7 @@ namespace PROJECT_PRN231.Models
 
                 entity.ToTable("UserExamResult");
 
-                entity.Property(e => e.ResultId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("result_id");
+                entity.Property(e => e.ResultId).HasColumnName("result_id");
 
                 entity.Property(e => e.EndTime)
                     .HasColumnType("datetime")
