@@ -57,7 +57,7 @@ namespace PROJECT_PRN231.Controllers
             }
 
             existingQuestion.QuestionText = updatedQuestion.QuestionText;
-            existingQuestion.CorrectAnswer = updatedQuestion.CorrectAnswer;
+          
             existingQuestion.DifficultyLevel = updatedQuestion.DifficultyLevel;
             examSystemContext.Questions.Update(existingQuestion);
             examSystemContext.SaveChanges();
