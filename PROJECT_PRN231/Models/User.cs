@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PROJECT_PRN231.Models
 {
@@ -7,7 +8,10 @@ namespace PROJECT_PRN231.Models
     {
         public int UserId { get; set; }
         public string? Username { get; set; }
-        public string? Password { get; set; }
+        [Required]
+        public byte[] PasswordSalt { get; set; }
+        [Required]
+        public byte[] PasswordHash { get; set; }
         public string? Email { get; set; }
         public string? Role { get; set; }
     }

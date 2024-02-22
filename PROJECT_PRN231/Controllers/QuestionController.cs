@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PROJECT_PRN231.Models;
 
@@ -8,9 +9,10 @@ namespace PROJECT_PRN231.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-         
+
 
         // GET: api/Questions
+        [Authorize (Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<Question>> Get()
         {
