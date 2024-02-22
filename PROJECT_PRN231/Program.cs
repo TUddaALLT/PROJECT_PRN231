@@ -5,6 +5,10 @@ using PROJECT_PRN231;
 using PROJECT_PRN231.Controllers;
 using PROJECT_PRN231.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using PROJECT_PRN231.Interface;
+using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -15,11 +19,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ExamSystemContext>(options => 
-    options.UseSqlServer("server =(local); database = ExamSystem; uid=sa;pwd=123456; TrustServerCertificate=True;Encrypt=False")
-    );
 builder.Services.Configure<AppSettings>(
     builder.Configuration.GetSection("ApplicationSettings"));
+builder.Services.AddDbContext<ExamSystemContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
+});
+
+//addScope
+builder.Services.AddScoped<IExamRepository, ExamRepository>();
 
 builder.Services.AddAuthentication(x =>
 {
