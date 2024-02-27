@@ -12,8 +12,14 @@ namespace PROJECT_PRN231.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        public IQuestionRepository QuestionRepository;
-        public QuestionController(IQuestionRepository questionRepository)
+ 
+
+
+        // GET: api/Questions
+        [Authorize (Roles = "Admin")]
+        [HttpGet]
+        public ActionResult<IEnumerable<Question>> Get()
+ 
         {
             QuestionRepository = questionRepository;
         }
