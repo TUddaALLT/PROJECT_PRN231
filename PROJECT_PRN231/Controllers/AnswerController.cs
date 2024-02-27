@@ -1,12 +1,93 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using PROJECT_PRN231.Interface;
+using PROJECT_PRN231.Models.ViewModel;
+using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Repository;
 
 namespace PROJECT_PRN231.Controllers
 {
-    public class AnswerController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AnswerController : ControllerBase
     {
-        public IActionResult Index()
+        public IAnswerRepository AnswerRepository;
+        public AnswerController(IAnswerRepository answerRepository)
         {
-            return View();
+            AnswerRepository = answerRepository;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                return Ok(AnswerRepository.GetAll());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("id")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var find = AnswerRepository.GetById(id);
+                if (find == null)
+                {
+                    return NotFound();
+                }
+                return Ok(find);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IActionResult Create(AnswerVM answerVM)
+        {
+            try
+            {
+                return Ok(AnswerRepository.Create(answerVM));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut("id")]
+        public ActionResult Update(int id, Answer answer)
+        {
+            if (id != answer.AnswerId)
+            {
+                return NotFound();
+            }
+            try
+            {
+                AnswerRepository.Update(answer);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                AnswerRepository.Delete(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }
