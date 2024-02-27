@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
@@ -17,6 +18,7 @@ namespace PROJECT_PRN231.Controllers
             QuestionRepository = questionRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetAll() {
             try
