@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ExamSystemContext>(option =>
 
 //addScope
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthentication(x =>
 {
