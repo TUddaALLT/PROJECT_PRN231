@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
@@ -48,7 +49,7 @@ namespace PROJECT_PRN231.Controllers
 
             return Ok(new { token = encrypterToken, userName = user.Username });
         }
-        [ApiExplorerSettings(IgnoreApi =true)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public bool CheckPassword(string password, User user)
         {
             bool result;
@@ -64,6 +65,11 @@ namespace PROJECT_PRN231.Controllers
         public IActionResult Register([FromBody] Register registerModel)
         {
             var user = new User { Username = registerModel.Username, Role = registerModel.Role };
+            var userExisted = _examSystemContext.Users.Where(x => x.Username == user.Username).FirstOrDefault();
+            if (userExisted != null)
+            {
+                return BadRequest("Username already existed");
+            }
             if (registerModel.ConfirmPassword == registerModel.Password)
             {
                 using (HMACSHA512? hmac = new HMACSHA512())
