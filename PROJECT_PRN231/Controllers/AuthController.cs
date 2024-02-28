@@ -21,6 +21,7 @@ namespace PROJECT_PRN231.Controllers
         private readonly IUserRepository _userRepository;
         public AuthController(IOptions<AppSettings> applicationSettings, IUserRepository userRepository)
         {
+            //hahahahahah
             _applicationSettings = applicationSettings.Value;
             _userRepository = userRepository;
         }
