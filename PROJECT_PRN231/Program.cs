@@ -29,6 +29,9 @@ builder.Services.AddDbContext<ExamSystemContext>(option =>
 //addScope
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IExamQuestionRepository, ExamQuestionRepository>();
+builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 
 builder.Services.AddAuthentication(x =>
 {

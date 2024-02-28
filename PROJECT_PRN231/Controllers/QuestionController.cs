@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.ViewModel;
+using PROJECT_PRN231.Repository;
 
 namespace PROJECT_PRN231.Controllers
 {
@@ -9,78 +12,86 @@ namespace PROJECT_PRN231.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
+ 
 
 
         // GET: api/Questions
         [Authorize (Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<Question>> Get()
+ 
         {
-            ExamSystemContext examSystemContext = new ExamSystemContext();
-            List<Question> _questions = examSystemContext.Questions.ToList();
-            return _questions;
+            QuestionRepository = questionRepository;
         }
 
-        // GET: api/Questions/5
-        [HttpGet("{id}")]
-        public ActionResult<Question> Get(int id)
-        {
-            ExamSystemContext examSystemContext = new ExamSystemContext();
-            List<Question> _questions = examSystemContext.Questions.ToList();
-            var question = _questions.FirstOrDefault(q => q.QuestionId == id);
-            if (question == null)
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult GetAll() {
+            try
             {
-                return NotFound();
+                return Ok(QuestionRepository.GetAll());
             }
-            return question;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-        // POST: api/Questions
+        [HttpGet("id")]
+        public IActionResult GetById(int id)
+        {
+            try
+            {
+                var find = QuestionRepository.GetById(id);
+                if(find == null)
+                {
+                    return NotFound();
+                }
+                return Ok(find);
+            }
+            catch {
+                return BadRequest();
+            }          
+        }
         [HttpPost]
-        public ActionResult<Question> Post([FromBody] Question question)
+        public IActionResult Create(QuestionVM questionVM)
         {
-            ExamSystemContext examSystemContext = new ExamSystemContext();
-            Console.WriteLine(question);
-            examSystemContext.Questions.Add(question);
-            examSystemContext.SaveChanges();
-            return CreatedAtAction(nameof(Get), new { id = question.QuestionId }, question);
+            try
+            {
+                return Ok(QuestionRepository.Create(questionVM));              
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-        // PUT: api/Questions/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Question updatedQuestion)
-        {
-            ExamSystemContext examSystemContext = new ExamSystemContext();
-            List<Question> _questions = examSystemContext.Questions.ToList();
-            var existingQuestion = _questions.FirstOrDefault(q => q.QuestionId == id);
-            if (existingQuestion == null)
+        [HttpPut("id")]
+        public IActionResult Update(Question question, int id) {
+            if(id != question.QuestionId)
             {
                 return NotFound();
             }
-
-            existingQuestion.QuestionText = updatedQuestion.QuestionText;
-          
-            existingQuestion.DifficultyLevel = updatedQuestion.DifficultyLevel;
-            examSystemContext.Questions.Update(existingQuestion);
-            examSystemContext.SaveChanges();
-            return CreatedAtAction(nameof(Get), new { id = existingQuestion.QuestionId }, existingQuestion);
+            try
+            {
+                QuestionRepository.Update(question);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-        // DELETE: api/Questions/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int id)
         {
-            ExamSystemContext examSystemContext = new ExamSystemContext();
-            List<Question> _questions = examSystemContext.Questions.ToList();
-            var questionToRemove = _questions.FirstOrDefault(q => q.QuestionId == id);
-            if (questionToRemove == null)
+            try
             {
-                return NotFound();
+                QuestionRepository.Delete(id);
+                return Ok();
             }
-
-            examSystemContext.Questions.Remove(questionToRemove);
-            examSystemContext.SaveChanges();
-            return NoContent();
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }
