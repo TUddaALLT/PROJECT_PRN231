@@ -12,5 +12,6 @@ namespace PROJECT_PRN231.Models
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+        public string email { get; set; }
     }
 }
