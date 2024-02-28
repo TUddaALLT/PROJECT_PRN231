@@ -8,6 +8,6 @@ namespace PROJECT_PRN231.Models
         public int ExamQuestionId { get; set; }
         public int? ExamId { get; set; }
         public int? QuestionId { get; set; }
-        public int? QuestionOrder { get; set; }
+        public int? QuestionOrder { get; set; } 
     }
 }
