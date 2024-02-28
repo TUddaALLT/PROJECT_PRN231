@@ -63,7 +63,7 @@ namespace PROJECT_PRN231.Controllers
         [HttpPost("Register")]
         public IActionResult Register([FromBody] Register registerModel)
         {
-            var user = new User { Username = registerModel.Username, Role = registerModel.Role, Email = registerModel.email };
+            var user = new User { Username = registerModel.Username, Role = registerModel.Role};
             if (registerModel.ConfirmPassword == registerModel.Password)
             {
                 using (HMACSHA512? hmac = new HMACSHA512())
