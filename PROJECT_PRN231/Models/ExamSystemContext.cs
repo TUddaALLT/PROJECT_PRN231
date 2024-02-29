@@ -23,7 +23,7 @@ namespace PROJECT_PRN231.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserExamResult> UserExamResults { get; set; } = null!;
 
- 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -32,7 +32,7 @@ namespace PROJECT_PRN231.Models
                 optionsBuilder.UseSqlServer("server =(local); database = ExamSystem; uid=sa;pwd=123456; TrustServerCertificate=True;Encrypt=False");
             }
         }
- 
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -115,6 +115,13 @@ namespace PROJECT_PRN231.Models
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .HasColumnName("username");
+
+                entity.Property(e => e.OtpCode)
+                    .HasMaxLength(5)
+                    .HasColumnName("otpCode");
+
+                entity.Property(e => e.Verified)
+                    .HasColumnName("verified");                
             });
 
             modelBuilder.Entity<UserExamResult>(entity =>
