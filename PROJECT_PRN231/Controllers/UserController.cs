@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.Mail;
+using PROJECT_PRN231.Utilities;
 using System.Security.Cryptography;
 
 namespace PROJECT_PRN231.Controllers
@@ -32,8 +34,10 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "User")]
         [HttpPost("ChangePassword")]
-        public IActionResult ChangePassword([FromBody] ChangePassword model) 
+        public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
             if (!ModelState.IsValid)
             {
@@ -66,8 +70,111 @@ namespace PROJECT_PRN231.Controllers
                 ModelState.AddModelError("", "Error when change password");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
 
+        //[Authorize(Roles = "Admin")]
+        [HttpDelete("DeleteUser")]
+        public IActionResult Delete([FromBody] string userName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var user = _userRepository.GetByUserName(userName);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (!_userRepository.DeleteUser(user.UserId))
+            {
+                ModelState.AddModelError("", "Error when delete user");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                return Ok(user);
+            }
+        }
+
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "User")]
+        [HttpPost("SendMailOTP")]
+        public async Task<IActionResult> SendMailOTP([FromBody] SendOTP model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetByUserName(model.Username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Email != null)
+            {
+                return BadRequest("User already have email");
+            }
+
+            MailHelper mailHelper = new MailHelper();
+            string otp = await mailHelper.PostMailAsync(model.Email);
+            if (otp == "failed")
+            {
+                ModelState.AddModelError("", "Error when send OTP to mail");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            user.Email = model.Email;
+            user.OtpCode = otp;
+            if (!_userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Error when saving otp to database");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            var response = new OTPResponse
+            {
+                Username = model.Username,
+                Email = model.Email
+            };
+
+            return Ok(response);
+        }
+
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "User")]
+        [HttpPost("ConfirmOTP")]
+        public IActionResult ConfirmOTP([FromBody] OTPResponse model, string otp)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetByUserName(model.Username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (user.Email == null || user.OtpCode == null)
+            {
+                return BadRequest("User dont have email or have otp code");
+            }
+            if (otp != user.OtpCode)
+            {
+                return BadRequest("Otp code invalid");
+            }
+
+            user.Verified = true;
+            if (!_userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Error when verifying user in database");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok("User successfully verified");
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

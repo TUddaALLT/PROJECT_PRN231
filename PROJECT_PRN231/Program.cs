@@ -65,7 +65,10 @@ app.UseCors(policy => policy.AllowAnyHeader()
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseAuthorization();
+if (app.Environment.IsDevelopment())
+{
+    app.UseAuthorization();
+}
 
 app.MapControllers();
 
