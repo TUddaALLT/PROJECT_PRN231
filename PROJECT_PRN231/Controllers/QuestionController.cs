@@ -19,7 +19,7 @@ namespace PROJECT_PRN231.Controllers
             QuestionRepository = questionRepository;
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -40,7 +40,7 @@ namespace PROJECT_PRN231.Controllers
                 var find = QuestionRepository.GetById(id);
                 if (find == null)
                 {
-                    return NotFound();
+                    return NotFound("Not found!");
                 }
                 return Ok(find);
             }
@@ -66,12 +66,12 @@ namespace PROJECT_PRN231.Controllers
         {
             if (id != question.QuestionId)
             {
-                return NotFound();
+                return NotFound("Not found!");
             }
             try
             {
                 QuestionRepository.Update(question);
-                return Ok();
+                return Ok("Update success!");
             }
             catch (Exception ex)
             {
@@ -81,10 +81,15 @@ namespace PROJECT_PRN231.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+            var find = QuestionRepository.GetById(id);
+            if (find == null)
+            {
+                return NotFound("Not found!");
+            }
             try
             {
                 QuestionRepository.Delete(id);
-                return Ok();
+                return Ok("Delete success");
             }
             catch
             {

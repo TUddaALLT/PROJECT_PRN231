@@ -37,7 +37,7 @@ namespace PROJECT_PRN231.Controllers
                 var find = AnswerRepository.GetById(id);
                 if (find == null)
                 {
-                    return NotFound();
+                    return NotFound("Not found!");
                 }
                 return Ok(find);
             }
@@ -63,12 +63,12 @@ namespace PROJECT_PRN231.Controllers
         {
             if (id != answer.AnswerId)
             {
-                return NotFound();
+                return NotFound("Not found!");
             }
             try
             {
                 AnswerRepository.Update(answer);
-                return Ok();
+                return Ok("Update success!");
             }
             catch (Exception ex)
             {
@@ -79,10 +79,15 @@ namespace PROJECT_PRN231.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+            var find = AnswerRepository.GetById(id);
+            if (find == null)
+            {
+                return NotFound("Not found!");
+            }
             try
             {
                 AnswerRepository.Delete(id);
-                return Ok();
+                return Ok("Delete success");
             }
             catch
             {

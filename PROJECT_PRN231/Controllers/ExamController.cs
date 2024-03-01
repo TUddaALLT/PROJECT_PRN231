@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
@@ -11,6 +12,7 @@ namespace PROJECT_PRN231.Controllers
     public class ExamController : ControllerBase
     {
         public IExamRepository _ExamRepository;
+        private ExamSystemContext _examSystemContext;
         public ExamController(IExamRepository examRepository)
         {
             _ExamRepository = examRepository;
@@ -27,7 +29,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("id")]
+        [HttpGet("GetById/{id}")]
         public IActionResult Get(int id)
         {
             try
@@ -35,7 +37,7 @@ namespace PROJECT_PRN231.Controllers
                 var find = _ExamRepository.GetById(id);
                 if (find == null)
                 {
-                    return NotFound();
+                    return NotFound("Not found!");
                 }
                 return Ok(find);
             }
@@ -61,12 +63,12 @@ namespace PROJECT_PRN231.Controllers
         {
             if (id != exam.ExamId)
             {
-                return NotFound();
+                return NotFound("Not found!");
             }
             try
             {
                 _ExamRepository.Update(exam);
-                return Ok();
+                return Ok("Update success!");
             }
             catch (Exception ex)
             {
@@ -77,15 +79,21 @@ namespace PROJECT_PRN231.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+            var find = _ExamRepository.GetById(id);
+            if (find == null)
+            {
+                return NotFound("Not found!");
+            }
             try
             {
                 _ExamRepository.Delete(id);
-                return Ok();
+                return Ok("Delete success!");
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("Exam is referenced in UserExamResult. Cannot delete!");
             }
         }
+
     }
 }
