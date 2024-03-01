@@ -36,7 +36,7 @@ namespace PROJECT_PRN231.Controllers
 
         //[Authorize(Roles = "Admin")]
         //[Authorize(Roles = "User")]
-        [HttpPost("ChangePassword")]
+        [HttpPut("ChangePassword")]
         public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
             if (!ModelState.IsValid)
@@ -70,6 +70,41 @@ namespace PROJECT_PRN231.Controllers
                 ModelState.AddModelError("", "Error when change password");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpPut("ResetPassword")]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetByEmail(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            MailHelper mailHelper = new MailHelper();
+            var newPassword = await mailHelper.PostMailResetPasswordAsync(email);
+            if (newPassword == "failed")
+            {
+                ModelState.AddModelError("", "Error when send OTP to mail");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            using (HMACSHA512? hmac = new HMACSHA512())
+            {
+                user.PasswordSalt = hmac.Key;
+                user.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(newPassword));
+            }
+            if (!_userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Error when saving new password to database");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok("Password reseted");
+
         }
 
         //[Authorize(Roles = "Admin")]
@@ -119,7 +154,7 @@ namespace PROJECT_PRN231.Controllers
             }
 
             MailHelper mailHelper = new MailHelper();
-            string otp = await mailHelper.PostMailAsync(model.Email);
+            string otp = await mailHelper.PostMailOTPAsync(model.Email);
             if (otp == "failed")
             {
                 ModelState.AddModelError("", "Error when send OTP to mail");
@@ -145,7 +180,7 @@ namespace PROJECT_PRN231.Controllers
 
         //[Authorize(Roles = "Admin")]
         //[Authorize(Roles = "User")]
-        [HttpPost("ConfirmOTP")]
+        [HttpPost("ConfirmOTP/{otp}")]
         public IActionResult ConfirmOTP([FromBody] OTPResponse model, string otp)
         {
             if (!ModelState.IsValid)
@@ -162,12 +197,17 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest("User dont have email or have otp code");
             }
+            if (user.Email != model.Email)
+            {
+                return BadRequest("wrong email");
+            }
             if (otp != user.OtpCode)
             {
                 return BadRequest("Otp code invalid");
             }
 
             user.Verified = true;
+            user.OtpCode = null;
             if (!_userRepository.UpdateUser(user))
             {
                 ModelState.AddModelError("", "Error when verifying user in database");
