@@ -34,7 +34,7 @@ namespace PROJECT_PRN231.Repository
 
         public User GetByEmail(string email)
         {
-            var user = _context.Users.Where(x => x.Email == email).FirstOrDefault();
+            var user = _context.Users.Where(x => x.Email == email && x.Verified == true).FirstOrDefault();
             return user;
         }
 

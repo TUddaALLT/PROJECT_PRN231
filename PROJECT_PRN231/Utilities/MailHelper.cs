@@ -11,7 +11,7 @@ namespace PROJECT_PRN231.Utilities
         private const string smtpServer = "smtp.gmail.com"; // smtp server for gmail
         string OTPcode; // OTP code ..duh
 
-        public async Task<string> PostMailAsync(String Email)
+        public async Task<string> PostMailOTPAsync(String Email)
         {
             try
             {
@@ -41,6 +41,45 @@ namespace PROJECT_PRN231.Utilities
                     await smtpClient.SendMailAsync(mail);
 
                     return OTPcode;
+                }
+            }
+            catch (Exception ex)
+            {
+                return "failed";
+            }
+        }
+
+        public async Task<string> PostMailResetPasswordAsync(String Email)
+        {
+            try
+            {
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer))
+                {
+                    smtpClient.Port = 587;
+                    smtpClient.Credentials = new NetworkCredential(sendingEmail, sendingEmailPassword);
+                    smtpClient.EnableSsl = true;
+
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress(sendingEmail);
+
+                    string password = "";
+                    // Create OTP code
+                    Random random = new Random();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        password += random.Next(10);
+                    }
+
+
+                    //Create mail to send
+
+                    mail.To.Add(Email);
+                    mail.Subject = "Reset password for Exam system";
+                    mail.Body = "Your new password " + password;
+
+                    await smtpClient.SendMailAsync(mail);
+
+                    return password;
                 }
             }
             catch (Exception ex)
