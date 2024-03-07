@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace CLIENT_MVC.Utilities
@@ -7,7 +9,7 @@ namespace CLIENT_MVC.Utilities
     {
         const string BaseUrl = "https://localhost:8080/api/";
 
-        public async Task<T> RequestGetAsync<T>(string path)
+        public async Task<IActionResult> RequestGetAsync<T>(string path)
         {
             using (var client = new HttpClient())
             {
@@ -16,7 +18,7 @@ namespace CLIENT_MVC.Utilities
                 {
                     string responseBody =  await response.Content.ReadAsStringAsync();
                     var responseData = JsonConvert.DeserializeObject<T>(responseBody);
-                    return responseData;
+                    return new OkObjectResult(responseData);
                 }
                 else
                 {
@@ -25,7 +27,7 @@ namespace CLIENT_MVC.Utilities
             }
         }
 
-        public async Task<T> RequestPostAsync<T>(string path, T body)
+        public async Task<IActionResult> RequestPostAsync<T>(string path, T body)
         {
             using (var client = new HttpClient())
             {
@@ -36,11 +38,15 @@ namespace CLIENT_MVC.Utilities
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     var responseData = JsonConvert.DeserializeObject<T>(responseBody);
-                    return responseData;
-                }   
+                    return new OkObjectResult("Register successfull");
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return new BadRequestObjectResult("Bad request");
+                }
                 else
                 {
-                    throw new Exception("Get api failed");
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
             }
         }

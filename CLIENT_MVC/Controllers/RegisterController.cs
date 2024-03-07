@@ -29,9 +29,8 @@ namespace CLIENT_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _apiHelper.RequestPostAsync<Register>("Register", register);
-                Console.WriteLine(result);
-                return RedirectToAction(nameof(Index));
+                var result = await _apiHelper.RequestPostAsync<Register>(ACCESS_CONTROLLER + "Register", register);
+                return RedirectToAction("Index","Home");
             }
             return View(register);
         }
