@@ -8,5 +8,7 @@ namespace PROJECT_PRN231.Models
         public int ExamId { get; set; }
         public string? ExamName { get; set; }
         public int? Duration { get; set; }
+
+        public UserExamResult UserExamResult { get; set; }
     }
 }

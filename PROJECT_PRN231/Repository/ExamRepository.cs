@@ -13,6 +13,17 @@ namespace PROJECT_PRN231.Repository
             _context = context;
         }
 
+        public bool checkExamId(int id)
+        {
+            //// Kiểm tra xem có dữ liệu liên quan trong bảng UserExamResult hay không
+            //var examHasResults = _context.UserExamResults.Any(uer => uer.ExamId == id);
+            //if (examHasResults)
+            //{
+            //    return BadRequest("Exam is referenced in UserExamResult. Cannot delete!");
+            //}
+            return _context.UserExamResults.Any(uer => uer.ExamId == id);
+        }
+
         public Exam Create(ExamVM exam)
         {
             var _new = new Exam
@@ -32,7 +43,7 @@ namespace PROJECT_PRN231.Repository
 
         public void Delete(int id)
         {
-            var find = _context.Exams.FirstOrDefault(e => e.ExamId  == id); 
+            var find = _context.Exams.SingleOrDefault(e => e.ExamId  == id); 
             if (find != null)
             {
                 _context.Exams.Remove(find);
