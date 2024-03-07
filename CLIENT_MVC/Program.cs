@@ -1,7 +1,10 @@
+using CLIENT_MVC.Utilities;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<APIHelper>();
 
 var app = builder.Build();
 
