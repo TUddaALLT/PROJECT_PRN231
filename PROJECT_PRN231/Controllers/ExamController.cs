@@ -29,7 +29,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetById/{id}")]
+        [HttpGet("id")]
         public IActionResult Get(int id)
         {
             try
@@ -46,7 +46,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest();
             }
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public IActionResult Create(ExamVM exam)
         {
             try
@@ -58,7 +58,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("id")]
+        [HttpPut("Update/{id}")]
         public ActionResult Update(int id, Exam exam)
         {
             if (id != exam.ExamId)
@@ -76,7 +76,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {
             var find = _ExamRepository.GetById(id);

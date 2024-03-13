@@ -1,38 +1,35 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PROJECT_PRN231.Models;
-using PROJECT_PRN231.Models.ViewModel;
-using System.Diagnostics;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
+using System.Text;
 
 namespace CLIENT_MVC.Controllers
 {
-    public class QuestionController : Controller
+    public class ExamController : Controller
     {
         private readonly HttpClient client = null;
         private string BaseUrl = "";
 
-        public QuestionController( )
+        public ExamController()
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            BaseUrl = "https://localhost:8080/api/Question";
+            BaseUrl = "https://localhost:8080/api/Exam";
         }
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Exam");
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
-            ViewBag.Questions = list;
+            var list = System.Text.Json.JsonSerializer.Deserialize<List<Exam>>(strData, options) ?? new List<Exam>();
+            ViewBag.Exams = list;
             return View();
         }
 
@@ -43,11 +40,11 @@ namespace CLIENT_MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Question question)
+        public async Task<IActionResult> Add(Exam exam)
         {
             try
             {
-                var json = System.Text.Json.JsonSerializer.Serialize(question);
+                var json = System.Text.Json.JsonSerializer.Serialize(exam);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await client.PostAsync(BaseUrl + "/Add", content);
@@ -64,7 +61,7 @@ namespace CLIENT_MVC.Controllers
                 }
             }
             catch (Exception ex)
-            {              
+            {
                 // Xử lý exception nếu cần
                 return View("Error");
             }
@@ -81,12 +78,12 @@ namespace CLIENT_MVC.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     // Đọc dữ liệu trả về từ API
-                    var questionJson = await response.Content.ReadAsStringAsync();
+                    var examJson = await response.Content.ReadAsStringAsync();
 
                     // Deserialize JSON thành đối tượng Question
-                    var question = JsonConvert.DeserializeObject<Question>(questionJson);
+                    var exam = JsonConvert.DeserializeObject<Exam>(examJson);
 
-                    return View(question);
+                    return View(exam);
                 }
                 else
                 {
@@ -94,20 +91,20 @@ namespace CLIENT_MVC.Controllers
                     return View("Error");
                 }
             }
-
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(Question question)
+        public async Task<IActionResult> Update(Exam exam)
         {
             try
             {
-                var json = System.Text.Json.JsonSerializer.Serialize(question);
+                var json = System.Text.Json.JsonSerializer.Serialize(exam);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
-                HttpResponseMessage response = await client.PutAsync(BaseUrl + "/Update/" + question.QuestionId, content);
+                //HttpResponseMessage response = await client.PutAsync(BaseUrl + "/Update/" + exam.ExamId, content);
+                HttpResponseMessage response = await client.PutAsync("https://localhost:8080/api/Exam/Update/" + exam.ExamId, content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -128,13 +125,13 @@ namespace CLIENT_MVC.Controllers
 
 
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Question question)
+        [HttpPost]
+        public async Task<IActionResult> Delete(Exam exam)
         {
             try
             {
                 // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
-                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + "/Delete/" + question.QuestionId);
+                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + "/Delete/" + exam.ExamId);
 
                 if (response.IsSuccessStatusCode)
                 {
