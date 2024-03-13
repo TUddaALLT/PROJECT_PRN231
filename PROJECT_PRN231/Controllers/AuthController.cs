@@ -49,7 +49,12 @@ namespace PROJECT_PRN231.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var encrypterToken = tokenHandler.WriteToken(token);
 
-            return Ok(new { token = encrypterToken, userName = user.Username });
+            var result = new LoginResult
+            {
+                Username = user.Username,
+                Token = encrypterToken
+            };
+            return Ok(result);
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool CheckPassword(string password, User user)
@@ -87,7 +92,7 @@ namespace PROJECT_PRN231.Controllers
 
             if (_userRepository.AddUser(user))
             {
-                return Ok(user);
+                return Ok("User successfully registered");
             }
             else
             {

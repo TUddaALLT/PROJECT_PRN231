@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PROJECT_PRN231.Models;
+using System.Net;
 
 namespace CLIENT_MVC.Controllers
 {
@@ -20,6 +21,7 @@ namespace CLIENT_MVC.Controllers
 
         public IActionResult Register()
         {
+            ViewBag.Validate = "";
             return View();
         }
 
@@ -30,12 +32,13 @@ namespace CLIENT_MVC.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _apiHelper.RequestPostAsync<Register>(ACCESS_CONTROLLER + "Register", register);
-                if(result.GetType() == typeof(OkObjectResult))
+                if(result.Response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index","Home");
                 }
-                else
+                else if (result.Response.StatusCode == HttpStatusCode.BadRequest)
                 {
+                    ViewBag.Validate = result.Body;
                     return View(register);
                 }
             }
