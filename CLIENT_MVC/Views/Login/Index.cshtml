@@ -1,16 +1,16 @@
-﻿@model PROJECT_PRN231.Models.Register
+﻿@model PROJECT_PRN231.Models.Login
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Register</h1>
+<h1>Index</h1>
 
-<h4>Register</h4>
+<h4>Login</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Register">
+        <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Username" class="control-label"></label>
@@ -18,19 +18,9 @@
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 <span class="text-danger">@ViewBag.Validate</span>
             </div>
             <div class="form-group">
@@ -41,9 +31,6 @@
 </div>
 
 <div>
-    <a asp-action="Home">Back to Home</a>
+    <a asp-controller="Home" asp-action="Index">Back to Home</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
