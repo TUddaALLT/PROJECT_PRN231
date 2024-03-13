@@ -10,5 +10,7 @@ namespace PROJECT_PRN231.Interface
         Answer Create(AnswerVM answerVM);
         void Update(Answer answerVM);
         void Delete(int id);
+
+        List<Answer> GetByQuestionId(int id);
     }
 }
