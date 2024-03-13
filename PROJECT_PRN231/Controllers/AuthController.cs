@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.Account;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

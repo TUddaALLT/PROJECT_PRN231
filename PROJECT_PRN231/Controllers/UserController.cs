@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.Account;
 using PROJECT_PRN231.Models.Mail;
 using PROJECT_PRN231.Utilities;
 using System.Security.Cryptography;
@@ -29,7 +30,7 @@ namespace PROJECT_PRN231.Controllers
             var list = _userRepository.GetAll();
             if (list == null)
             {
-                return NotFound();
+                return NotFound("User table is empty");
             }
             return Ok(list);
         }
@@ -46,7 +47,7 @@ namespace PROJECT_PRN231.Controllers
             var userExist = _userRepository.GetByUserName(model.Username);
             if (userExist == null)
             {
-                return NotFound();
+                return NotFound("User not exist");
             }
             if (!CheckPassword(model.OldPassword, userExist))
             {
@@ -54,7 +55,7 @@ namespace PROJECT_PRN231.Controllers
             }
             if (model.NewPassword != model.ConfirmNewPassword)
             {
-                return BadRequest("New password and Confirm password not correct");
+                return BadRequest("New password and Confirm new password not correct");
             }
             using (HMACSHA512? hmac = new HMACSHA512())
             {
@@ -73,21 +74,21 @@ namespace PROJECT_PRN231.Controllers
         }
 
         [HttpPut("ResetPassword")]
-        public async Task<IActionResult> ResetPasswordAsync([FromBody] string email)
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPassword resetPassword)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = _userRepository.GetByEmail(email);
+            var user = _userRepository.GetByEmail(resetPassword.Email);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Email dont exist");
             }
 
             MailHelper mailHelper = new MailHelper();
-            var newPassword = await mailHelper.PostMailResetPasswordAsync(email);
+            var newPassword = await mailHelper.PostMailResetPasswordAsync(resetPassword.Email);
             if (newPassword == "failed")
             {
                 ModelState.AddModelError("", "Error when send OTP to mail");
@@ -103,7 +104,7 @@ namespace PROJECT_PRN231.Controllers
                 ModelState.AddModelError("", "Error when saving new password to database");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return Ok("Password reseted");
+            return Ok("Password reseted, please check your email for futher information");
 
         }
 
