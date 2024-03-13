@@ -31,22 +31,21 @@ namespace CLIENT_MVC.Controllers
                     PropertyNameCaseInsensitive = true
                 };
                 var list = System.Text.Json.JsonSerializer.Deserialize<List<Answer>>(strData, options) ?? new List<Answer>();
+                ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                 if (list.Any())
                 {
-                    ViewBag.Answers = list;
+                    ViewBag.Answers = list;                    
                     return View();
                 }
                 else
                 {
                     // Nếu danh sách rỗng, bạn có thể truyền nó qua ViewBag và hiển thị bảng rỗng trong view
-                    ViewBag.Answers = new List<Answer>();
+                    //ViewBag.Answers = new List<Answer>();
                     return View();
                 }
             }
             else
             {
-                // Xử lý khi gọi API không thành công
-                // Ví dụ: Trả về một trang lỗi hoặc thông báo lỗi
                 return View();
             }
         }
