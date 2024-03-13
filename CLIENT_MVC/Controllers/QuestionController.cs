@@ -128,7 +128,7 @@ namespace CLIENT_MVC.Controllers
 
 
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(Question question)
         {
             try
