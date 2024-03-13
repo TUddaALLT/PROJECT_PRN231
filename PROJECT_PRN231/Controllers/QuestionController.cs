@@ -49,7 +49,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest();
             }
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public IActionResult Create(QuestionVM questionVM)
         {
             try
@@ -61,7 +61,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("id")]
+        [HttpPut("Update/{id}")]
         public IActionResult Update(Question question, int id)
         {
             if (id != question.QuestionId)
@@ -78,7 +78,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {
             var find = QuestionRepository.GetById(id);
@@ -89,7 +89,7 @@ namespace PROJECT_PRN231.Controllers
             try
             {
                 QuestionRepository.Delete(id);
-                return Ok("Delete success");
+                return Ok("Delete success!");
             }
             catch
             {

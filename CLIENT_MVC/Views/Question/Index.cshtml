@@ -4,10 +4,68 @@
 @{
 }
 
+<h1>List Question</h1>
 
+<div class="container">
+    <div class="row justify-content-center">
+        <div>
+            <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+            <button class="btn btn-primary" onclick="searchByName()">Search</button>
+            <a href="question/Add"><button class="btn btn-primary">Add</button></a>
+        </div>
+        <div>
+            <select id="sortSelect">
+                <option value="sort">Sort</option>  
+                <option value="name">Sort by Name</option>
+            </select>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>QuestionId</th>
+                    <th>QuestionText</th>
+                    <th>QuestionDifficult</th>
+                    <th>Service</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+                @foreach (var item in ViewBag.Questions)
+                {
+                    <tr id="row_@item.QuestionId">
+                        <th>@item.QuestionId</th>
+                        <th>@item.QuestionText</th>
+                        <th>@item.DifficultyLevel</th>
+                        <td class="col-1"><a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteQuestion('@item.QuestionId')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function deleteQuestion(questionId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this question?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Question/Delete/${questionId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${questionId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+</script>
 
-
-@foreach (var item in ViewBag.Questions)
-{
-    <p>@item.QuestionText </p>
-}
