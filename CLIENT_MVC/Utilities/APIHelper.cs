@@ -50,5 +50,29 @@ namespace CLIENT_MVC.Utilities
                 }
             }
         }
+
+        public async Task<IActionResult> RequestPutAsync<T>(string path, T body)
+        {
+            using (var client = new HttpClient())
+            {
+                string jsonContent = JsonConvert.SerializeObject(body);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var response = await client.PutAsync(BaseUrl + path, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<T>(responseBody);
+                    return new OkObjectResult("Register successfull");
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return new BadRequestObjectResult("Bad request");
+                }
+                else
+                {
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                }
+            }
+        }
     }
 }

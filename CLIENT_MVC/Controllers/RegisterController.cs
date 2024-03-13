@@ -30,7 +30,14 @@ namespace CLIENT_MVC.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _apiHelper.RequestPostAsync<Register>(ACCESS_CONTROLLER + "Register", register);
-                return RedirectToAction("Index","Home");
+                if(result.GetType() == typeof(OkObjectResult))
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                else
+                {
+                    return View(register);
+                }
             }
             return View(register);
         }
