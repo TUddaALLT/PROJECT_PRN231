@@ -1,7 +1,7 @@
 ﻿using CLIENT_MVC.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.Account;
 using System.Net;
 
 namespace CLIENT_MVC.Controllers

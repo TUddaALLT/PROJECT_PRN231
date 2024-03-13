@@ -1,4 +1,5 @@
-﻿@model PROJECT_PRN231.Models.Login
+﻿@using PROJECT_PRN231.Models.Account
+@model Login
 
 @{
     ViewData["Title"] = "Index";
@@ -29,8 +30,10 @@
         </form>
     </div>
 </div>
+<div><a asp-action="ForgotPassword">Forgot password?</a></div>
 
 <div>
     <a asp-controller="Home" asp-action="Index">Back to Home</a>
 </div>
+
 
