@@ -8,7 +8,7 @@ namespace PROJECT_PRN231.Interface
         List<Exam> GetAll();
         Exam GetById(int id);
         Exam Create(ExamVM examVM);
-        void Update(Exam examVM);
+        void Update(Exam exam);
         void Delete(int id);
 
         public bool checkExamId(int id);

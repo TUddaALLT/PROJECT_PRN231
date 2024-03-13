@@ -4,14 +4,14 @@
 @{
 }
 
-<h1>List Question</h1>
+<h1>List Exam</h1>
 
 <div class="container">
     <div class="row justify-content-center">
         <div>
             <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a href="question/Add"><button class="btn btn-primary">Add</button></a>
+            <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
         </div>
         <div>
             <select id="sortSelect">
@@ -20,25 +20,24 @@
                 <option value="id">Sort by Id</option>
             </select>
         </div>
-        <table class="table" id="questionTable">
+        <table class="table" id="examTable">
             <thead>
                 <tr>
-                    <th>QuestionId</th>
-                    <th>QuestionText</th>
-                    <th>QuestionDifficult</th>
-                    <th>Service</th>
+                    <th>Exam Id</th>
+                    <th>Exam Name</th>
+                    <th>Duration</th>
                 </tr>
             </thead>
-            <tbody id="questionTableBody">
-                @foreach (var item in ViewBag.Questions)
+            <tbody id="examTableBody">
+                @foreach (var item in ViewBag.Exams)
                 {
-                    <tr id="row_@item.QuestionId">
-                        <th>@item.QuestionId</th>
-                        <th>@item.QuestionText</th>
-                        <th>@item.DifficultyLevel</th>
-                        <td class="col-1"><a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a></td>
+                    <tr id="row_@item.ExamId">
+                        <th>@item.ExamId</th>
+                        <th>@item.ExamName</th>
+                        <th>@item.Duration</th>
+                        <td class="col-1"><a href="exam/Update/@item.ExamId"><button class="btn btn-primary">Update</button></a></td>
                         <td>
-                            <button class="btn btn-danger" onclick="deleteQuestion('@item.QuestionId')">Delete</button>
+                            <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
                         </td>
                     </tr>
                 }
@@ -47,12 +46,12 @@
     </div>
 </div>
 <script>
-    function deleteQuestion(questionId) {
+    function deleteQuestion(examId) {
         // Xác nhận việc xóa trước khi thực hiện
-        var confirmDelete = confirm("Are you sure to delete this question?");
+        var confirmDelete = confirm("Are you sure to delete this Exam?");
         if (confirmDelete) {
             // Gửi yêu cầu xóa thông qua API
-            fetch(`https://localhost:8080/api/Question/Delete/${questionId}`, {
+            fetch(`https://localhost:8080/api/Exam/Delete/${examId}`, {
                 method: 'DELETE'
             })
                 .then(response => {
@@ -60,7 +59,7 @@
                         throw new Error('Network response was not ok');
                     }
                     // Xóa hàng từ bảng sau khi xóa thành công
-                    var rowToDelete = document.getElementById(`row_${questionId}`);
+                    var rowToDelete = document.getElementById(`row_${examId}`);
                     rowToDelete.parentNode.removeChild(rowToDelete);
                 })
                 .catch(error => {
@@ -73,7 +72,7 @@
     // Function to handle search by name
     function searchByName() {
         var searchValue = document.getElementById("searchInput").value.toLowerCase();
-        var rows = document.querySelectorAll("#questionTableBody tr");
+        var rows = document.querySelectorAll("#examTableBody tr");
 
         rows.forEach(row => {
             var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
@@ -87,7 +86,7 @@
 
     //sortByName
     function sortByName() {
-        var table = document.getElementById("questionTable");
+        var table = document.getElementById("examTable");
         var tbody = table.getElementsByTagName("tbody")[0];
         var rows = tbody.getElementsByTagName("tr");
 
@@ -114,7 +113,7 @@
 
     //sortById
     function sortById() {
-        var table = document.getElementById("questionTable");
+        var table = document.getElementById("examTable");
         var tbody = table.getElementsByTagName("tbody")[0];
         var rows = tbody.getElementsByTagName("tr");
 
