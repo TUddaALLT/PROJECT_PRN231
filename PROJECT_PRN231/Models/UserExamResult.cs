@@ -11,5 +11,8 @@ namespace PROJECT_PRN231.Models
         public double? Score { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+
+        public virtual Exam? Exam { get; set; }
+        public virtual User? User { get; set; }
     }
 }
