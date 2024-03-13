@@ -12,16 +12,17 @@ namespace PROJECT_PRN231.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        public IQuestionRepository QuestionRepository { get; set; }
+        public IQuestionRepository QuestionRepository;
+
         public QuestionController(IQuestionRepository questionRepository)
         {
-            this.QuestionRepository = questionRepository;
+            QuestionRepository = questionRepository;
         }
 
-        // GET: api/Questions
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult GetAll() {
+        public IActionResult GetAll()
+        {
             try
             {
                 return Ok(QuestionRepository.GetAll());
@@ -37,51 +38,58 @@ namespace PROJECT_PRN231.Controllers
             try
             {
                 var find = QuestionRepository.GetById(id);
-                if(find == null)
+                if (find == null)
                 {
-                    return NotFound();
+                    return NotFound("Not found!");
                 }
                 return Ok(find);
             }
-            catch {
+            catch
+            {
                 return BadRequest();
-            }          
+            }
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public IActionResult Create(QuestionVM questionVM)
         {
             try
             {
-                return Ok(QuestionRepository.Create(questionVM));              
+                return Ok(QuestionRepository.Create(questionVM));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("id")]
-        public IActionResult Update(Question question, int id) {
-            if(id != question.QuestionId)
+        [HttpPut("Update/{id}")]
+        public IActionResult Update(Question question, int id)
+        {
+            if (id != question.QuestionId)
             {
-                return NotFound();
+                return NotFound("Not found!");
             }
             try
             {
                 QuestionRepository.Update(question);
-                return Ok();
+                return Ok("Update success!");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {
+            var find = QuestionRepository.GetById(id);
+            if (find == null)
+            {
+                return NotFound("Not found!");
+            }
             try
             {
                 QuestionRepository.Delete(id);
-                return Ok();
+                return Ok("Delete success!");
             }
             catch
             {

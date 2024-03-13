@@ -10,5 +10,7 @@ namespace PROJECT_PRN231.Interface
         Exam Create(ExamVM examVM);
         void Update(Exam examVM);
         void Delete(int id);
+
+        public bool checkExamId(int id);
     }
 }

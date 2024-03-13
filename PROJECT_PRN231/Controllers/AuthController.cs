@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
+using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,16 +18,17 @@ namespace PROJECT_PRN231.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppSettings _applicationSettings;
-        private readonly ExamSystemContext _examSystemContext;
-        public AuthController(IOptions<AppSettings> applicationSettings, ExamSystemContext examSystemContext)
+        private readonly IUserRepository _userRepository;
+        public AuthController(IOptions<AppSettings> applicationSettings, IUserRepository userRepository)
         {
+            //hahahahahah
             _applicationSettings = applicationSettings.Value;
-            _examSystemContext = examSystemContext;
+            _userRepository = userRepository;
         }
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Login login)
         {
-            var user = _examSystemContext.Users.Where(x => x.Username == login.Username).FirstOrDefault();
+            var user = _userRepository.GetByUserName(login.Username);
             if (user == null)
             {
                 return BadRequest("UserName or password incorrect");
@@ -47,7 +49,12 @@ namespace PROJECT_PRN231.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var encrypterToken = tokenHandler.WriteToken(token);
 
-            return Ok(new { token = encrypterToken, userName = user.Username });
+            var result = new LoginResult
+            {
+                Username = user.Username,
+                Token = encrypterToken
+            };
+            return Ok(result);
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool CheckPassword(string password, User user)
@@ -68,10 +75,10 @@ namespace PROJECT_PRN231.Controllers
             var user = new User { Username = registerModel.Username, Role = registerModel.Role};
 =======
             var user = new User { Username = registerModel.Username, Role = registerModel.Role };
-            var userExisted = _examSystemContext.Users.Where(x => x.Username == user.Username).FirstOrDefault();
+            var userExisted = _userRepository.GetByUserName(user.Username);
             if (userExisted != null)
             {
-                return BadRequest("Username already existed");
+                return BadRequest("UserName already exist");
             }
 >>>>>>> 6518049c0a805524e6f32230d9330cc217efe6ac
             if (registerModel.ConfirmPassword == registerModel.Password)
@@ -86,9 +93,17 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest("Password dont match");
             }
-            _examSystemContext.Users.Add(user);
-            _examSystemContext.SaveChanges();
-            return Ok(user);
+
+            if (_userRepository.AddUser(user))
+            {
+                return Ok("User successfully registered");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Error when registering user");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
     }
 }
