@@ -52,6 +52,7 @@ namespace PROJECT_PRN231.Controllers
 
             var result = new LoginResult
             {
+                Id = user.UserId,
                 Username = user.Username,
                 Token = encrypterToken
             };

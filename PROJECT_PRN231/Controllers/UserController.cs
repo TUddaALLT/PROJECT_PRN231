@@ -37,6 +37,22 @@ namespace PROJECT_PRN231.Controllers
 
         //[Authorize(Roles = "Admin")]
         //[Authorize(Roles = "User")]
+        [HttpGet("Detail{username}")]
+        public IActionResult GetByUsername(string username)
+        {
+            var user = _userRepository.GetByUserName(username);
+            if (user == null)
+            {
+                return NotFound("User id not found");
+            }
+            return Ok(user);
+
+        }
+
+
+
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "User")]
         [HttpPut("ChangePassword")]
         public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
@@ -64,7 +80,7 @@ namespace PROJECT_PRN231.Controllers
             }
             if (_userRepository.UpdateUser(userExist))
             {
-                return Ok(userExist);
+                return Ok("User's password changed");
             }
             else
             {
