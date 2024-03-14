@@ -4,47 +4,120 @@
 @{
 }
 
-<h1>List Exam</h1>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div>
-            <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
-            <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
-        </div>
-        <div>
-            <select id="sortSelect">
-                <option value="sort">Sort</option>
-                <option value="name">Sort by Name</option>
-                <option value="id">Sort by Id</option>
-            </select>
-        </div>
-        <table class="table" id="examTable">
-            <thead>
-                <tr>
-                    <th>Exam Id</th>
-                    <th>Exam Name</th>
-                    <th>Duration</th>
-                </tr>
-            </thead>
-            <tbody id="examTableBody">
-                @foreach (var item in ViewBag.Exams)
-                {
-                    <tr id="row_@item.ExamId">
-                        <th>@item.ExamId</th>
-                        <th>@item.ExamName</th>
-                        <th>@item.Duration</th>
-                        <td class="col-1"><a href="exam/Update/@item.ExamId"><button class="btn btn-primary">Update</button></a></td>
-                        <td>
-                            <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
-                        </td>
-                    </tr>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management</title>
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        #sortSelect {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #examTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            #examTable th, #examTable td {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+            }
+
+            #examTable th {
+                background-color: #f2f2f2;
+            }
+
+        .action-buttons {
+            display: flex;
+        }
+
+            .action-buttons button {
+                margin-right: 5px;
+            }
+
+                .action-buttons button a {
+                    text-decoration: none;
+                    color: #fff;
                 }
-            </tbody>
-        </table>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="search-container">
+                <div>
+                    <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+                    <button class="btn btn-primary" onclick="searchByName()">Search</button>
+                    <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
+                </div>
+                <div>
+                    <select id="sortSelect">
+                        <option value="sort">Sort</option>
+                        <option value="name">Sort by Name</option>
+                        <option value="id">Sort by Id</option>
+                    </select>
+                </div>
+            </div>
+            <table class="table" id="examTable">
+                <thead>
+                    <tr>
+                        <th>Exam Id</th>
+                        <th>Exam Name</th>
+                        <th>Duration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="examTableBody">
+                    @foreach (var item in ViewBag.Exams)
+                    {
+                        <tr id="row_@item.ExamId">
+                            <td>@item.ExamId</td>
+                            <td>@item.ExamName</td>
+                            <td>@item.Duration</td>
+                            <td class="action-buttons">
+                                <button class="btn btn-primary"><a href="exam/Update/@item.ExamId">Update</a></button>
+                                <button class="btn btn-primary"><a href="exam/AddQuestionToExam/@item.ExamId">Add question</a></button>
+                                <button class="btn btn-danger"><a href="exam/ListAllQuestion?id=@item.ExamId">View all questions</a></button>
+                                <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</body>
+</html>
+
+
 <script>
     function deleteQuestion(examId) {
         // Xác nhận việc xóa trước khi thực hiện

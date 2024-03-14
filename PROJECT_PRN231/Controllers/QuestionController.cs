@@ -32,6 +32,26 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetAllByExamId")]
+        public IActionResult GetAllByExamId(int? id)
+        {
+            try
+            {
+                ExamSystemContext context = new ExamSystemContext();
+                List<int?> questionIds = context.ExamQuestions
+                                      .Where(s => s.ExamId == id)
+                                      .Select(q => q.QuestionId)
+                                      .ToList();
+
+                List<Question> questionList = context.
+                    Questions.Where(q=>questionIds.Contains(q.QuestionId)).ToList();
+                return Ok(questionList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("id")]
         public IActionResult GetById(int id)
         {
