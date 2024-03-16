@@ -3,6 +3,7 @@
 *@
 @{
 }
+
 <h2>Edit Question</h2>
 
 <form method="post" action="Update" class="mt-5" id="updateQuestion">
@@ -10,7 +11,7 @@
     <div class="mb-3">
         <label for="questionId" class="form-label">Question Id</label>
         <!-- Hiển thị trường QuestionText của đối tượng Question -->
-        <input id="questionId" name="QuestionId" class="form-control" value="@Model.QuestionId" disabled>
+        <input id="questionId" name="QuestionId" class="form-control" value="@Model.QuestionId" readonly>
     </div>
 
     <div class="mb-3">

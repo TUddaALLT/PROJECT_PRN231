@@ -21,6 +21,7 @@ namespace PROJECT_PRN231.Models
         public virtual DbSet<ExamQuestion> ExamQuestions { get; set; } = null!;
         public virtual DbSet<Question> Questions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserExamQuestionAnswer> UserExamQuestionAnswers { get; set; } = null!;
         public virtual DbSet<UserExamResult> UserExamResults { get; set; } = null!;
 
 
