@@ -181,6 +181,7 @@ namespace PROJECT_PRN231.Controllers
             }
 
             user.OtpCode = otp;
+            user.Verified = false;
             if (!_userRepository.UpdateUser(user))
             {
                 ModelState.AddModelError("", "Error when saving otp to database");
@@ -210,9 +211,9 @@ namespace PROJECT_PRN231.Controllers
             {
                 return NotFound();
             }
-            if (user.Email == null || user.OtpCode == null)
+            if (user.OtpCode == null)
             {
-                return BadRequest("User dont have email or have otp code");
+                return BadRequest("The system did'nt send any otp code to this email");
             }
             //if (user.Email != model.Email)
             //{
@@ -222,7 +223,7 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest("Otp code invalid");
             }
-
+            user.Email = model.Email;
             user.Verified = true;
             user.OtpCode = null;
             if (!_userRepository.UpdateUser(user))
