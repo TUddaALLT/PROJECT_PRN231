@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Repository;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -18,7 +20,27 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", //Name the security scheme
+    new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
+        Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement{
+    {
+        new OpenApiSecurityScheme{
+            Reference = new OpenApiReference{
+                Id = "Bearer", //The name of the previously defined security scheme.
+                Type = ReferenceType.SecurityScheme
+            }
+        },new List<string>()
+    }
+});
+});
 builder.Services.Configure<AppSettings>(
     builder.Configuration.GetSection("ApplicationSettings"));
 builder.Services.AddDbContext<ExamSystemContext>(option =>
@@ -51,6 +73,7 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
