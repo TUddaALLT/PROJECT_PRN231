@@ -8,5 +8,10 @@ namespace CLIENT_MVC.Controllers
         {
             return View();
         }
+
+        public IActionResult AuthorizeError()
+        {
+            return View();
+        }
     }
 }

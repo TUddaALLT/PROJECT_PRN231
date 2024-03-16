@@ -23,7 +23,7 @@ namespace PROJECT_PRN231.Controllers
             _userRepository = userRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAll")]
         public IActionResult GetAllUsers()
         {
@@ -35,9 +35,8 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
-        [HttpGet("Detail{username}")]
+        [Authorize(Roles = "Admin,User")]
+        [HttpGet("Detail/{username}")]
         public IActionResult GetByUsername(string username)
         {
             var user = _userRepository.GetByUserName(username);
@@ -51,8 +50,7 @@ namespace PROJECT_PRN231.Controllers
 
 
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin,User")]
         [HttpPut("ChangePassword")]
         public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
@@ -124,7 +122,7 @@ namespace PROJECT_PRN231.Controllers
 
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser")]
         public IActionResult Delete([FromBody] string userName)
         {
@@ -149,8 +147,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost("SendMailOTP")]
         public async Task<IActionResult> SendMailOTP([FromBody] SendOTP model)
         {
@@ -158,17 +155,22 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var emailExist = _userRepository.GetByEmail(model.Email);
+            if (emailExist != null)
+            {
+                return BadRequest("Email already registered");
+            }
 
             var user = _userRepository.GetByUserName(model.Username);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
-            if (user.Email != null)
-            {
-                return BadRequest("User already have email");
-            }
+            //if (user.Email != null)
+            //{
+            //    return BadRequest("User already have email");
+            //}
 
             MailHelper mailHelper = new MailHelper();
             string otp = await mailHelper.PostMailOTPAsync(model.Email);
@@ -178,7 +180,6 @@ namespace PROJECT_PRN231.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            user.Email = model.Email;
             user.OtpCode = otp;
             if (!_userRepository.UpdateUser(user))
             {
@@ -195,10 +196,9 @@ namespace PROJECT_PRN231.Controllers
             return Ok(response);
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
-        [HttpPost("ConfirmOTP/{otp}")]
-        public IActionResult ConfirmOTP([FromBody] OTPResponse model, string otp)
+        [Authorize(Roles = "Admin,User")]
+        [HttpPost("ConfirmOTP")]
+        public IActionResult ConfirmOTP([FromBody] OTPResponse model)
         {
             if (!ModelState.IsValid)
             {
@@ -214,11 +214,11 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest("User dont have email or have otp code");
             }
-            if (user.Email != model.Email)
-            {
-                return BadRequest("wrong email");
-            }
-            if (otp != user.OtpCode)
+            //if (user.Email != model.Email)
+            //{
+            //    return BadRequest("wrong email");
+            //}
+            if (model.OTPCode != user.OtpCode)
             {
                 return BadRequest("Otp code invalid");
             }
