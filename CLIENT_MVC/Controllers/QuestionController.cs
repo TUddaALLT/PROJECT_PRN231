@@ -15,7 +15,7 @@ namespace CLIENT_MVC.Controllers
         private readonly HttpClient client = null;
         private string BaseUrl = "";
 
-        public QuestionController( )
+        public QuestionController()
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");

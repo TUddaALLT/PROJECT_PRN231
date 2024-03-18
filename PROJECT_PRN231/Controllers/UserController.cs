@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
+using PROJECT_PRN231.Models.Account;
 using PROJECT_PRN231.Models.Mail;
 using PROJECT_PRN231.Utilities;
 using System.Security.Cryptography;
@@ -22,20 +23,34 @@ namespace PROJECT_PRN231.Controllers
             _userRepository = userRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAll")]
         public IActionResult GetAllUsers()
         {
             var list = _userRepository.GetAll();
             if (list == null)
             {
-                return NotFound();
+                return NotFound("User table is empty");
             }
             return Ok(list);
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin,User")]
+        [HttpGet("Detail/{username}")]
+        public IActionResult GetByUsername(string username)
+        {
+            var user = _userRepository.GetByUserName(username);
+            if (user == null)
+            {
+                return NotFound("User id not found");
+            }
+            return Ok(user);
+
+        }
+
+
+
+        [Authorize(Roles = "Admin,User")]
         [HttpPut("ChangePassword")]
         public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
@@ -46,7 +61,7 @@ namespace PROJECT_PRN231.Controllers
             var userExist = _userRepository.GetByUserName(model.Username);
             if (userExist == null)
             {
-                return NotFound();
+                return NotFound("User not exist");
             }
             if (!CheckPassword(model.OldPassword, userExist))
             {
@@ -54,7 +69,7 @@ namespace PROJECT_PRN231.Controllers
             }
             if (model.NewPassword != model.ConfirmNewPassword)
             {
-                return BadRequest("New password and Confirm password not correct");
+                return BadRequest("New password and Confirm new password not correct");
             }
             using (HMACSHA512? hmac = new HMACSHA512())
             {
@@ -63,7 +78,7 @@ namespace PROJECT_PRN231.Controllers
             }
             if (_userRepository.UpdateUser(userExist))
             {
-                return Ok(userExist);
+                return Ok("User's password changed");
             }
             else
             {
@@ -73,21 +88,21 @@ namespace PROJECT_PRN231.Controllers
         }
 
         [HttpPut("ResetPassword")]
-        public async Task<IActionResult> ResetPasswordAsync([FromBody] string email)
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPassword resetPassword)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = _userRepository.GetByEmail(email);
+            var user = _userRepository.GetByEmail(resetPassword.Email);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Email dont exist");
             }
 
             MailHelper mailHelper = new MailHelper();
-            var newPassword = await mailHelper.PostMailResetPasswordAsync(email);
+            var newPassword = await mailHelper.PostMailResetPasswordAsync(resetPassword.Email);
             if (newPassword == "failed")
             {
                 ModelState.AddModelError("", "Error when send OTP to mail");
@@ -103,11 +118,11 @@ namespace PROJECT_PRN231.Controllers
                 ModelState.AddModelError("", "Error when saving new password to database");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return Ok("Password reseted");
+            return Ok("Password reseted, please check your email for futher information");
 
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser")]
         public IActionResult Delete([FromBody] string userName)
         {
@@ -132,8 +147,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost("SendMailOTP")]
         public async Task<IActionResult> SendMailOTP([FromBody] SendOTP model)
         {
@@ -141,17 +155,22 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var emailExist = _userRepository.GetByEmail(model.Email);
+            if (emailExist != null)
+            {
+                return BadRequest("Email already registered");
+            }
 
             var user = _userRepository.GetByUserName(model.Username);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
-            if (user.Email != null)
-            {
-                return BadRequest("User already have email");
-            }
+            //if (user.Email != null)
+            //{
+            //    return BadRequest("User already have email");
+            //}
 
             MailHelper mailHelper = new MailHelper();
             string otp = await mailHelper.PostMailOTPAsync(model.Email);
@@ -161,8 +180,8 @@ namespace PROJECT_PRN231.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            user.Email = model.Email;
             user.OtpCode = otp;
+            user.Verified = false;
             if (!_userRepository.UpdateUser(user))
             {
                 ModelState.AddModelError("", "Error when saving otp to database");
@@ -178,10 +197,9 @@ namespace PROJECT_PRN231.Controllers
             return Ok(response);
         }
 
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "User")]
-        [HttpPost("ConfirmOTP/{otp}")]
-        public IActionResult ConfirmOTP([FromBody] OTPResponse model, string otp)
+        [Authorize(Roles = "Admin,User")]
+        [HttpPost("ConfirmOTP")]
+        public IActionResult ConfirmOTP([FromBody] OTPResponse model)
         {
             if (!ModelState.IsValid)
             {
@@ -193,19 +211,19 @@ namespace PROJECT_PRN231.Controllers
             {
                 return NotFound();
             }
-            if (user.Email == null || user.OtpCode == null)
+            if (user.OtpCode == null)
             {
-                return BadRequest("User dont have email or have otp code");
+                return BadRequest("The system did'nt send any otp code to this email");
             }
-            if (user.Email != model.Email)
-            {
-                return BadRequest("wrong email");
-            }
-            if (otp != user.OtpCode)
+            //if (user.Email != model.Email)
+            //{
+            //    return BadRequest("wrong email");
+            //}
+            if (model.OTPCode != user.OtpCode)
             {
                 return BadRequest("Otp code invalid");
             }
-
+            user.Email = model.Email;
             user.Verified = true;
             user.OtpCode = null;
             if (!_userRepository.UpdateUser(user))

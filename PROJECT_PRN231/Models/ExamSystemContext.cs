@@ -21,39 +21,42 @@ namespace PROJECT_PRN231.Models
         public virtual DbSet<ExamQuestion> ExamQuestions { get; set; } = null!;
         public virtual DbSet<Question> Questions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserExamQuestionAnswer> UserExamQuestionAnswers { get; set; } = null!;
         public virtual DbSet<UserExamResult> UserExamResults { get; set; } = null!;
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server =(local); database = ExamSystem; uid=sa;pwd=123456; TrustServerCertificate=True;Encrypt=False");
-            }
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("server =(local); database = ExamSystem; uid=sa;pwd=12345678; TrustServerCertificate=True;Encrypt=False");
+//            }
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Answer>(entity =>
             {
-                /*entity.HasKey(e => e.AnswerId);*/ // Đặt AnswerId làm khóa chính
-
                 entity.ToTable("Answer");
 
                 entity.Property(e => e.AnswerId)
-                    .HasColumnName("answer_id")
-                    .ValueGeneratedOnAdd(); // Sử dụng Identity cho AnswerId
+                    .ValueGeneratedNever()
+                    .HasColumnName("answer_id");
 
                 entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
 
-                entity.Property(e => e.QuestionId).HasColumnName("question_id");
+                entity.Property(e => e.QuestionId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("question_id");
 
                 entity.Property(e => e.Value).HasColumnName("value");
+
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.Answers)
+                    .HasForeignKey(d => d.QuestionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Answer_Question");
             });
-
-
 
             modelBuilder.Entity<Exam>(entity =>
             {
@@ -79,6 +82,16 @@ namespace PROJECT_PRN231.Models
                 entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.Property(e => e.QuestionOrder).HasColumnName("question_order");
+
+                entity.HasOne(d => d.Exam)
+                    .WithMany(p => p.ExamQuestions)
+                    .HasForeignKey(d => d.ExamId)
+                    .HasConstraintName("FK_ExamQuestion_Exam");
+
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.ExamQuestions)
+                    .HasForeignKey(d => d.QuestionId)
+                    .HasConstraintName("FK_ExamQuestion_Question");
             });
 
             modelBuilder.Entity<Question>(entity =>
@@ -100,13 +113,18 @@ namespace PROJECT_PRN231.Models
                     .HasMaxLength(100)
                     .HasColumnName("email");
 
-                entity.Property(e => e.PasswordSalt)
-                    .HasMaxLength(500)
-                    .HasColumnName("passwordSalt");
+                entity.Property(e => e.OtpCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("otpCode");
 
                 entity.Property(e => e.PasswordHash)
                     .HasMaxLength(500)
                     .HasColumnName("passwordHash");
+
+                entity.Property(e => e.PasswordSalt)
+                    .HasMaxLength(500)
+                    .HasColumnName("passwordSalt");
 
                 entity.Property(e => e.Role)
                     .HasMaxLength(100)
@@ -116,12 +134,44 @@ namespace PROJECT_PRN231.Models
                     .HasMaxLength(50)
                     .HasColumnName("username");
 
-                entity.Property(e => e.OtpCode)
-                    .HasMaxLength(5)
-                    .HasColumnName("otpCode");
+                entity.Property(e => e.Verified).HasColumnName("verified");
+            });
 
-                entity.Property(e => e.Verified)
-                    .HasColumnName("verified");                
+            modelBuilder.Entity<UserExamQuestionAnswer>(entity =>
+            {
+                entity.ToTable("UserExamQuestionAnswer");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AnswerId).HasColumnName("answer_id");
+
+                entity.Property(e => e.ExamId).HasColumnName("exam_id");
+
+                entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
+
+                entity.Property(e => e.QuestionId).HasColumnName("question_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Answer)
+                    .WithMany(p => p.UserExamQuestionAnswers)
+                    .HasForeignKey(d => d.AnswerId)
+                    .HasConstraintName("FK_UserExamQuestionAnswer_Answer");
+
+                entity.HasOne(d => d.Exam)
+                    .WithMany(p => p.UserExamQuestionAnswers)
+                    .HasForeignKey(d => d.ExamId)
+                    .HasConstraintName("FK_UserExamQuestionAnswer_Exam");
+
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.UserExamQuestionAnswers)
+                    .HasForeignKey(d => d.QuestionId)
+                    .HasConstraintName("FK_UserExamQuestionAnswer_Question");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserExamQuestionAnswers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_UserExamQuestionAnswer_Users");
             });
 
             modelBuilder.Entity<UserExamResult>(entity =>
@@ -146,6 +196,16 @@ namespace PROJECT_PRN231.Models
                     .HasColumnName("start_time");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Exam)
+                    .WithMany(p => p.UserExamResults)
+                    .HasForeignKey(d => d.ExamId)
+                    .HasConstraintName("FK_UserExamResult_Exam");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserExamResults)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_UserExamResult_Users");
             });
 
             OnModelCreatingPartial(modelBuilder);

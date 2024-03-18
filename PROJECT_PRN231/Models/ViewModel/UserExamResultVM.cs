@@ -2,6 +2,7 @@
 {
     public class UserExamResultVM
     {
+        public int ResultId { get; set; }
         public int? UserId { get; set; }
         public int? ExamId { get; set; }
         public double? Score { get; set; }
