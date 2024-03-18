@@ -43,7 +43,7 @@ namespace PROJECT_PRN231.Controllers
             var key = Encoding.ASCII.GetBytes(this._applicationSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Username), new Claim(ClaimTypes.Role, user.Role) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("username", user.Username), new Claim(ClaimTypes.Role, user.Role) }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };
@@ -64,7 +64,7 @@ namespace PROJECT_PRN231.Controllers
             bool result;
             using (HMACSHA512? hmac = new HMACSHA512(user.PasswordSalt))
             {
-                var compute = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var compute = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 result = compute.SequenceEqual(user.PasswordHash);
             }
             return result;
@@ -84,7 +84,7 @@ namespace PROJECT_PRN231.Controllers
                 using (HMACSHA512? hmac = new HMACSHA512())
                 {
                     user.PasswordSalt = hmac.Key;
-                    user.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(registerModel.Password));
+                    user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerModel.Password));
                 }
             }
             else
