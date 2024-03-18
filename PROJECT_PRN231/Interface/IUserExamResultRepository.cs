@@ -5,10 +5,12 @@ namespace PROJECT_PRN231.Interface
 {
     public interface IUserExamResultRepository
     {
-        List<UserExamResult> GetAll();
+        List<UserExamResultVM> GetAll();
         UserExamResult GetById(int id);
-        UserExamResult Create(UserExamResultVM userExamResultVM);
-        void Update(UserExamResult userExamResult);
-        void Delete(int id);
+        List<UserExamResultVM> GetByUserId(int userId);
+        bool UpdateUserExamResult(UserExamResult userExamResult);
+        bool DeleteUserExamResult(int id);
+        bool AddUserExamResult(UserExamResult userExamResult);
+        bool Save();
     }
 }

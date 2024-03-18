@@ -10,6 +10,7 @@ namespace PROJECT_PRN231.Interface
         Exam Create(ExamVM examVM);
         void Update(Exam exam);
         void Delete(int id);
+        int GetQuestionCount(int id);
 
         public bool checkExamId(int id);
     }
