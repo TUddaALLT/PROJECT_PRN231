@@ -29,6 +29,9 @@
                 </tr>
             </thead>
             <tbody id="answerTableBody">
+                @{
+                    int previousQuestionId = -1; // Giá trị ban đầu để đảm bảo rằng sẽ không có questionId nào trùng khớp
+                }
                 @if (ViewBag.Answers == null || ViewBag.Answers.Count == 0)
                 {
                     <tr>
@@ -39,16 +42,35 @@
                 {
                     @foreach (var item in ViewBag.Answers)
                     {
-                        <tr id="row_@item.AnswerId">
-                            <td>@item.AnswerId</td>
-                            <td>@item.QuestionId</td>
-                            <td>@item.Value</td>
-                            <td>@item.IsCorrect</td>
-                            <td>
-                                <a href="answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
-                                <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
-                            </td>
-                        </tr>
+                        // Kiểm tra nếu QuestionId khác với QuestionId trước đó thì in ra một hàng mới với QuestionId
+                        if (item.QuestionId != previousQuestionId)
+                        {
+                            <tr id="row_@item.AnswerId">
+                                <td>@item.AnswerId</td>
+                                <th>@item.QuestionId</th>
+                                <td>@item.Value</td>
+                                <td>@item.IsCorrect</td>
+                                <td>
+                                    <a href="answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                    <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
+                                </td>
+                            </tr>
+                            previousQuestionId = item.QuestionId; // Cập nhật giá trị của QuestionId trước đó
+                        }
+                        else
+                        {
+                            // Nếu QuestionId giống nhau, chỉ in ra Value và IsCorrect
+                            <tr id="row_@item.AnswerId">
+                                <td></td>
+                                <td></td> <!-- Để trống cột QuestionId -->
+                                <td>@item.Value</td>
+                                <td>@item.IsCorrect</td>
+                                <td>
+                                    <a href="answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                    <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
+                                </td>
+                            </tr>
+                        }
                     }
                 }
             </tbody>

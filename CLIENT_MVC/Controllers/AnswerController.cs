@@ -147,59 +147,59 @@ namespace CLIENT_MVC.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> Update(Question question)
-        //{
-        //    try
-        //    {
-        //        var json = System.Text.Json.JsonSerializer.Serialize(question);
-        //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        [HttpPost]
+        public async Task<IActionResult> Update(Answer answer)
+        {
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(answer);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //        // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
-        //        HttpResponseMessage response = await client.PutAsync(BaseUrl + "/Update/" + question.QuestionId, content);
+                // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
+                HttpResponseMessage response = await client.PutAsync(BaseUrl + "/Update/" + answer.AnswerId, content);
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            // Xử lý lỗi nếu cần
-        //            return View("Error");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Xử lý exception nếu cần
-        //        return View("Error");
-        //    }
-        //}
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Xử lý lỗi nếu cần
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý exception nếu cần
+                return View("Error");
+            }
+        }
 
 
 
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete(Question question)
-        //{
-        //    try
-        //    {
-        //        // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
-        //        HttpResponseMessage response = await client.DeleteAsync(BaseUrl + "/Delete/" + question.QuestionId);
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Answer answer)
+        {
+            try
+            {
+                // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
+                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + "/Delete/" + answer.AnswerId);
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            // Xử lý lỗi nếu cần
-        //            return View("Error");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Xử lý exception nếu cần
-        //        return View("Error");
-        //    }
-        //}
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Xử lý lỗi nếu cần
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý exception nếu cần
+                return View("Error");
+            }
+        }
     }
 }

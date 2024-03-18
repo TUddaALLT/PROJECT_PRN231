@@ -21,12 +21,12 @@ namespace PROJECT_PRN231.Repository
                 Value = answerVM.Value,
                 IsCorrect = answerVM.IsCorrect,
             };
-            _context.Add(_new);
+            _context.Answers.Add(_new);
             _context.SaveChanges();
-
-            return new Answer { 
+            return new Answer
+            {
                 AnswerId = _new.AnswerId,
-                QuestionId = answerVM.QuestionId, 
+                QuestionId = answerVM.QuestionId,
                 Value = answerVM.Value,
                 IsCorrect = answerVM.IsCorrect,
             };
@@ -83,14 +83,14 @@ namespace PROJECT_PRN231.Repository
         }
 
 
-        public void Update(Answer answer)
+        public void Update(int id, AnswerVM answerVM)
         {
-            var find = _context.Answers.FirstOrDefault(f => f.AnswerId == answer.AnswerId);
+            var find = _context.Answers.FirstOrDefault(f => f.AnswerId == id);
             if (find != null)
             {
-                find.QuestionId = answer.QuestionId;
-                find.Value = answer.Value;
-                find.IsCorrect = answer.IsCorrect;
+                find.QuestionId = answerVM.QuestionId;
+                find.Value = answerVM.Value;
+                find.IsCorrect = answerVM.IsCorrect;
                 _context.SaveChanges();
             }
         }

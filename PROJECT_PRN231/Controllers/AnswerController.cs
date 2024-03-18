@@ -79,16 +79,12 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [HttpPut("Edit/{id}")]
-        public ActionResult Update(int id, Answer answer)
+        [HttpPut("Update/{id}")]
+        public ActionResult Update(int id, AnswerVM answerVM)
         {
-            if (id != answer.AnswerId)
-            {
-                return NotFound("Not found!");
-            }
             try
             {
-                AnswerRepository.Update(answer);
+                AnswerRepository.Update(id, answerVM);
                 return Ok("Update success!");
             }
             catch (Exception ex)
