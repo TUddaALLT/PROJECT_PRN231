@@ -55,6 +55,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IExamQuestionRepository, ExamQuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<IUserExamResultRepository, UserExamResultRepository>();
+builder.Services.AddScoped<IUserExamQuestionAnswerRepository, UserExamQuestionAnswerRepository>();
 
 builder.Services.AddAuthentication(x =>
 {

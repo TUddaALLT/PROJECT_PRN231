@@ -12,67 +12,148 @@ namespace PROJECT_PRN231.Repository
         {
             _context = context;
         }
-        public UserExamResult Create(UserExamResultVM userExamResultVM)
-        {
-            var _new = new UserExamResult
-            {
-                UserId = userExamResultVM.UserId,
-                ExamId = userExamResultVM.ExamId,
-                Score = userExamResultVM.Score,
-                StartTime = userExamResultVM.StartTime,
-                EndTime = userExamResultVM.EndTime,
-            };
-            _context.Add(_new);
-            _context.SaveChanges();
 
-            return new UserExamResult
-            {
-                ResultId = _new.ResultId,
-                UserId = userExamResultVM.UserId,
-                ExamId = userExamResultVM.ExamId,
-                Score = userExamResultVM.Score,
-                StartTime = userExamResultVM.StartTime,
-                EndTime = userExamResultVM.EndTime,
-            };
+        public bool AddUserExamResult(UserExamResult userExamResult)
+        {
+            _context.UserExamResults.Add(userExamResult);
+            return Save();
         }
 
-        public void Delete(int id)
+        public bool DeleteUserExamResult(int id)
         {
-            var find = _context.UserExamResults.SingleOrDefault(f => f.ResultId == id); 
-            if (find != null)
+            var userExamResult = _context.UserExamResults.Find(id);
+            if (userExamResult != null)
             {
-                _context.Remove(find);
-                _context.SaveChanges();
+                _context.UserExamResults.Remove(userExamResult);
             }
+            return Save();
         }
 
-        public List<UserExamResult> GetAll()
+        public List<UserExamResultVM> GetAll()
         {
             var list = _context.UserExamResults.ToList();
-            return list;
+            if (list.Count == 0)
+            {
+                return null;
+            }
+            var listVM = new List<UserExamResultVM>();
+            foreach (var item in list)
+            {
+                listVM.Add(new UserExamResultVM
+                {
+                    UserId = item.UserId,
+                    ExamId = item.ExamId,
+                    Score = item.Score,
+                    StartTime = item.StartTime,
+                    EndTime = item.EndTime
+                });
+            }
+            return listVM;
         }
 
         public UserExamResult GetById(int id)
         {
-            var find = _context.UserExamResults.FirstOrDefault(f => f.ResultId == id);
-            if (find != null)
-            {
-                return new UserExamResult
-                {
-                    ResultId= find.ResultId,
-                    UserId = find.UserId,   
-                    ExamId = find.ExamId,
-                    Score = find.Score,
-                    StartTime = find.StartTime,
-                    EndTime = find.EndTime,
-                };
-            }
-            return null;
+            return _context.UserExamResults.Find(id);
         }
 
-        public void Update(UserExamResult userExamResult)
+        public List<UserExamResultVM> GetByUserId(int userId)
         {
-            throw new NotImplementedException();
+            var list = _context.UserExamResults.Where(x => x.UserId == userId).ToList();
+            if (list.Count == 0)
+            {
+                return null;
+            }
+            var listVM = new List<UserExamResultVM>();
+            foreach (var item in list)
+            {
+                listVM.Add(new UserExamResultVM
+                {
+                    UserId = item.UserId,
+                    ExamId = item.ExamId,
+                    Score = item.Score,
+                    StartTime = item.StartTime,
+                    EndTime = item.EndTime
+                });
+            }
+            return listVM;
         }
+
+        public bool Save()
+        {
+            int save = _context.SaveChanges();
+            return save > 0 ? true : false;
+        }
+
+        public bool UpdateUserExamResult(UserExamResult userExamResult)
+        {
+            _context.UserExamResults.Update(userExamResult);
+            return Save();
+        }
+
+
+
+
+        //public UserExamResult Create(UserExamResultVM userExamResultVM)
+        //{
+        //    var _new = new UserExamResult
+        //    {
+        //        UserId = userExamResultVM.UserId,
+        //        ExamId = userExamResultVM.ExamId,
+        //        Score = userExamResultVM.Score,
+        //        StartTime = userExamResultVM.StartTime,
+        //        EndTime = userExamResultVM.EndTime,
+        //    };
+        //    _context.Add(_new);
+        //    _context.SaveChanges();
+
+        //    return new UserExamResult
+        //    {
+        //        ResultId = _new.ResultId,
+        //        UserId = userExamResultVM.UserId,
+        //        ExamId = userExamResultVM.ExamId,
+        //        Score = userExamResultVM.Score,
+        //        StartTime = userExamResultVM.StartTime,
+        //        EndTime = userExamResultVM.EndTime,
+        //    };
+        //}
+
+        //public void Delete(int id)
+        //{
+        //    var find = _context.UserExamResults.SingleOrDefault(f => f.ResultId == id); 
+        //    if (find != null)
+        //    {
+        //        _context.Remove(find);
+        //        _context.SaveChanges();
+        //    }
+        //}
+
+        //public List<UserExamResult> GetAll()
+        //{
+        //    var list = _context.UserExamResults.ToList();
+        //    return list;
+        //}
+
+        //public UserExamResult GetById(int id)
+        //{
+        //    var find = _context.UserExamResults.FirstOrDefault(f => f.ResultId == id);
+        //    if (find != null)
+        //    {
+        //        return new UserExamResult
+        //        {
+        //            ResultId= find.ResultId,
+        //            UserId = find.UserId,   
+        //            ExamId = find.ExamId,
+        //            Score = find.Score,
+        //            StartTime = find.StartTime,
+        //            EndTime = find.EndTime,
+        //        };
+        //    }
+        //    return null;
+        //}
+
+        //public void Update(UserExamResult userExamResult)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

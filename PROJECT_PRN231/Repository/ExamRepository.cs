@@ -72,6 +72,11 @@ namespace PROJECT_PRN231.Repository
             return null;
         }
 
+        public int GetQuestionCount(int id)
+        {
+            return _context.ExamQuestions.Where(x => x.ExamId == id).Count();
+        }
+
         public void Update(Exam exam)
         {
             var find = _context.Exams.SingleOrDefault(e => e.ExamId == exam.ExamId);
