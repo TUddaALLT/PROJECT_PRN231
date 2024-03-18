@@ -1,4 +1,5 @@
-﻿using PROJECT_PRN231.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
 
@@ -54,6 +55,7 @@ namespace PROJECT_PRN231.Repository
             {
                 return new Answer
                 {
+                    AnswerId = find.AnswerId,
                     QuestionId = find.QuestionId,
                     Value = find.Value,
                     IsCorrect = find.IsCorrect,
@@ -61,6 +63,25 @@ namespace PROJECT_PRN231.Repository
             }
             return null;
         }
+
+        public List<Answer> GetByQuestionId(int id)
+        {
+            var answers = _context.Answers.Where(a => a.QuestionId == id).ToList();
+
+            if (answers != null && answers.Any())
+            {
+                return answers.Select(answer => new Answer
+                {
+                    AnswerId = answer.AnswerId,
+                    QuestionId = answer.QuestionId,
+                    Value = answer.Value,
+                    IsCorrect = answer.IsCorrect
+                }).ToList();
+            }
+
+            return null;
+        }
+
 
         public void Update(Answer answer)
         {

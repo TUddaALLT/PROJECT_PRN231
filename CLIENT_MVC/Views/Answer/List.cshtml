@@ -1,0 +1,57 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>List Answer for Question @ViewBag.QuestionId</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div>
+            <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+            <button class="btn btn-primary" onclick="searchByName()">Search</button>
+            <a id="addButton" class="btn btn-primary">Add</a>
+        </div>
+        <table class="table" id="examAnswer">
+            <thead>
+                <tr>
+                    <th>Answer Id</th>
+                    <th>Value</th>
+                    <th>Is Correct</th>
+                    <th>Service</th>
+                </tr>
+            </thead>
+            <tbody id="answerTableBody">
+                @if (ViewBag.Answers == null || ViewBag.Answers.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4"><h1>Danh sách đáp án rỗng</h1></td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in ViewBag.Answers)
+                    {
+                        <tr id="row_@item.AnswerId">
+                            <td>@item.AnswerId</td>
+                            <td>@item.Value</td>
+                            <td>@item.IsCorrect</td>
+                            <td>
+                                <a href="exam/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    document.getElementById("addButton").addEventListener("click", function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+        var currentURL = window.location.href; // Lấy URL hiện tại
+        var newURL = currentURL.replace("/Index/1", "/Add"); // Thay đổi phần của URL cần thay đổi
+        window.location.href = newURL; // Chuyển hướng đến URL mới
+    });
+</script>
