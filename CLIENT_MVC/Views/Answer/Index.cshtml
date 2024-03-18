@@ -3,19 +3,26 @@
 *@
 @{
 }
-<h1>List Answer for Question @ViewBag.QuestionId</h1>
+<h1>List all Answer</h1>
 
 <div class="container">
     <div class="row justify-content-center">
         <div>
             <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
+            <a href="answer/Add" id="addButton" class="btn btn-primary">Add</a>
         </div>
-        <table class="table" id="examAnswer">
+        <div>
+            <select id="sortSelect">
+                <option value="sort">Sort</option>
+                <option value="id">Sort by Question Id</option>
+            </select>
+        </div>
+        <table class="table" id="answerTable">
             <thead>
                 <tr>
                     <th>Answer Id</th>
+                    <th>Question Id</th>
                     <th>Value</th>
                     <th>Is Correct</th>
                     <th>Service</th>
@@ -34,10 +41,11 @@
                     {
                         <tr id="row_@item.AnswerId">
                             <td>@item.AnswerId</td>
+                            <td>@item.QuestionId</td>
                             <td>@item.Value</td>
                             <td>@item.IsCorrect</td>
                             <td>
-                                <a href="exam/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                <a href="answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
                                 <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
                             </td>
                         </tr>
@@ -47,3 +55,76 @@
         </table>
     </div>
 </div>
+<script>
+    function deleteQuestion(answerId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this answer?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Answer/Delete/${answerId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${answerId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+
+    //search
+    // Function to handle search by name
+    function searchByName() {
+        var searchValue = document.getElementById("searchInput").value.toLowerCase();
+        var rows = document.querySelectorAll("#answerTableBody tr");
+
+        rows.forEach(row => {
+            var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
+            if (questionText.includes(searchValue)) {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function sortById() {
+        var table = document.getElementById("answerTable");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var rows = tbody.getElementsByTagName("tr");
+
+        // Chuyển đổi HTMLCollection sang mảng để sử dụng phương thức sort
+        var rowsArray = Array.prototype.slice.call(rows, 0);
+
+        // Sắp xếp mảng theo nội dung của cột ID (index 1)
+        rowsArray.sort(function (row1, row2) {
+            var id1 = parseInt(row1.getElementsByTagName("td")[1].innerText);
+            var id2 = parseInt(row2.getElementsByTagName("td")[1].innerText);
+            return id1 - id2;
+        });
+
+        // Xóa các hàng cũ khỏi tbody
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        // Thêm các hàng đã sắp xếp vào tbody
+        for (var i = 0; i < rowsArray.length; i++) {
+            tbody.appendChild(rowsArray[i]);
+        }
+    }
+
+
+    document.getElementById("sortSelect").addEventListener("change", function () {
+        var sortBy = this.value;
+        if (sortBy === "id") {
+            sortById();
+        }
+    });
+</script>

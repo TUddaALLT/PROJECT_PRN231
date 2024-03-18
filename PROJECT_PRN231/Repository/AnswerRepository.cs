@@ -55,6 +55,7 @@ namespace PROJECT_PRN231.Repository
             {
                 return new Answer
                 {
+                    AnswerId = find.AnswerId,
                     QuestionId = find.QuestionId,
                     Value = find.Value,
                     IsCorrect = find.IsCorrect,

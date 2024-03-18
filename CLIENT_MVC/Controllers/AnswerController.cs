@@ -20,7 +20,7 @@ namespace CLIENT_MVC.Controllers
             BaseUrl = "https://localhost:8080/api/Answer";
         }
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> List(int id)
         {
             HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/GetByQuestionId/id?id={id}");
             if (response.IsSuccessStatusCode)
@@ -34,13 +34,39 @@ namespace CLIENT_MVC.Controllers
                 ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                 if (list.Any())
                 {
-                    ViewBag.Answers = list;                    
+                    ViewBag.Answers = list;
                     return View();
                 }
                 else
                 {
-                    // Nếu danh sách rỗng, bạn có thể truyền nó qua ViewBag và hiển thị bảng rỗng trong view
-                    //ViewBag.Answers = new List<Answer>();
+                    return View();
+                }
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public async Task<IActionResult> Index(int id)
+        {
+            HttpResponseMessage response = await client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<Answer>>(strData, options) ?? new List<Answer>();
+                ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
+                if (list.Any())
+                {
+                    ViewBag.Answers = list;
+                    return View();
+                }
+                else
+                {
                     return View();
                 }
             }
@@ -51,66 +77,74 @@ namespace CLIENT_MVC.Controllers
         }
 
 
-        //[HttpGet]
-        //public IActionResult Add()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            string strData = await respone.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
+            ViewBag.Questions = list;
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Add(Question question)
-        //{
-        //    try
-        //    {
-        //        var json = System.Text.Json.JsonSerializer.Serialize(question);
-        //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        [HttpPost]
+        public async Task<IActionResult> Add(Answer answer)
+        {
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(answer);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //        HttpResponseMessage response = await client.PostAsync(BaseUrl + "/Add", content);
+                HttpResponseMessage response = await client.PostAsync(BaseUrl + "/Add", content);
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine(response);
-        //            // Xử lý lỗi nếu cần
-        //            return View("Error");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Xử lý exception nếu cần
-        //        return View("Error");
-        //    }
-        //}
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    Console.WriteLine(response);
+                    // Xử lý lỗi nếu cần
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý exception nếu cần
+                return View("Error");
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Update(int id)
-        //{
-        //    using (var client = new HttpClient())
-        //    {
-        //        // Gửi yêu cầu API để lấy thông tin câu hỏi theo ID
-        //        var response = await client.GetAsync(BaseUrl + $"/id?id={id}");
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                // Gửi yêu cầu API để lấy thông tin câu hỏi theo ID
+                var response = await client.GetAsync(BaseUrl + $"/id?id={id}");
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            // Đọc dữ liệu trả về từ API
-        //            var questionJson = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    // Đọc dữ liệu trả về từ API
+                    var answerJson = await response.Content.ReadAsStringAsync();
 
-        //            // Deserialize JSON thành đối tượng Question
-        //            var question = JsonConvert.DeserializeObject<Question>(questionJson);
+                    // Deserialize JSON thành đối tượng Question
+                    var answer = JsonConvert.DeserializeObject<Answer>(answerJson);
 
-        //            return View(question);
-        //        }
-        //        else
-        //        {
-        //            // Xử lý khi không thành công
-        //            return View("Error");
-        //        }
-        //    }
+                    return View(answer);
+                }
+                else
+                {
+                    // Xử lý khi không thành công
+                    return View("Error");
+                }
+            }
 
-        //}
+        }
 
 
         //[HttpPost]
