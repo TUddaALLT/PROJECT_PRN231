@@ -47,6 +47,25 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("examId/{examId}")]
+        public IActionResult GetByExamId(int examId)
+        {
+            try
+            {
+                var list = ExamQuestionRepository.GetAllQuestionsOfExam(examId);
+                if (list == null)
+                {
+                    return NotFound("not found");
+                }
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost("Add")]
         public IActionResult Create(ExamQuestionVM examQuestionVM)
         {

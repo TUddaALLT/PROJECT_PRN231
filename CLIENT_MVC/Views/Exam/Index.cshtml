@@ -103,6 +103,7 @@
                             <td>@item.ExamName</td>
                             <td>@item.Duration</td>
                             <td class="action-buttons">
+                                <button class="btn btn-danger"><a asp-controller="TakingExam" asp-action="Index" asp-route-examId="@item.ExamId">Take exam</a></button>
                                 <button class="btn btn-primary"><a href="exam/Update/@item.ExamId">Update</a></button>
                                 <button class="btn btn-primary"><a href="exam/AddQuestionToExam/@item.ExamId">Add question</a></button>
                                 <button class="btn btn-danger"><a href="exam/ListAllQuestion?id=@item.ExamId">View all questions</a></button>

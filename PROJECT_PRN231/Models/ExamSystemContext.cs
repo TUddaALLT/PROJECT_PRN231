@@ -40,13 +40,11 @@ namespace PROJECT_PRN231.Models
                 entity.ToTable("Answer");
 
                 entity.Property(e => e.AnswerId)
-                    .ValueGeneratedNever()
                     .HasColumnName("answer_id");
 
                 entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
 
                 entity.Property(e => e.QuestionId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("question_id");
 
                 entity.Property(e => e.Value).HasColumnName("value");

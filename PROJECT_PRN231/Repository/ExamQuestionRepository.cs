@@ -1,4 +1,5 @@
-﻿using PROJECT_PRN231.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
 
@@ -46,6 +47,12 @@ namespace PROJECT_PRN231.Repository
             return list;
         }
 
+        public List<ExamQuestion> GetAllQuestionsOfExam(int examId)
+        {
+            var list = _context.ExamQuestions.Where(x => x.ExamId == examId).Include(x => x.Question).ThenInclude(x => x.Answers).ToList();
+            return list;
+        }
+
         public ExamQuestion GetById(int id)
         {
             var find = _context.ExamQuestions.FirstOrDefault(e => e.ExamQuestionId == id);
@@ -55,8 +62,8 @@ namespace PROJECT_PRN231.Repository
                 {
                     ExamQuestionId = find.ExamQuestionId,
                     ExamId = find.ExamId,
-                    QuestionId =find.QuestionId,
-                    QuestionOrder =find.QuestionOrder,
+                    QuestionId = find.QuestionId,
+                    QuestionOrder = find.QuestionOrder,
                 };
             }
             return null;

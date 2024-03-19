@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace PROJECT_PRN231.Models
 {
@@ -17,7 +18,9 @@ namespace PROJECT_PRN231.Models
         public int? DifficultyLevel { get; set; }
 
         public virtual ICollection<Answer> Answers { get; set; }
+        [IgnoreDataMember]
         public virtual ICollection<ExamQuestion> ExamQuestions { get; set; }
+        [IgnoreDataMember]
         public virtual ICollection<UserExamQuestionAnswer> UserExamQuestionAnswers { get; set; }
     }
 }

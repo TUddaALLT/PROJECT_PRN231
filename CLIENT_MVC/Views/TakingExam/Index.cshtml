@@ -1,0 +1,68 @@
+﻿@model IEnumerable<PROJECT_PRN231.Models.ExamQuestion>
+
+@{
+	ViewData["Title"] = "Index";
+	int userId = Accessor.HttpContext.Session.GetInt32("UserId").Value;
+}
+
+<h1>Index</h1>
+
+<p>
+	Question
+</p>
+@foreach (var item in Model)
+{
+	<div>
+		@Html.DisplayFor(modelItem => item.Question.QuestionText)
+		<form id="form1" runat="server">
+			<div>
+				@foreach (var answer in item.Question.Answers)
+				{
+					<input type="radio"
+						   name="answer"
+						   value="@answer.AnswerId"
+						   data-questionId="@answer.QuestionId"
+						   data-examId="@Model.FirstOrDefault().ExamId"
+						   data-userId="@userId"
+						   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
+					<!-- Add more options as needed -->
+				}
+			</div>
+		</form>
+	</div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('input[type="radio"]').change(function () {
+			if (this.checked) {
+				var userId = $(this).attr("data-userId")
+				var examId = $(this).attr("data-examId");
+				var questionId = $(this).attr("data-questionId");
+				var answerId = $(this).val();
+				var isCorrect = $(this).attr("data-isCorrect");
+					// Add more properties as needed
+				// Make AJAX call to the controller method
+				$.ajax({
+					type: "POST",
+					url: "TakingExam/SelectAnswer",
+					data: { userId: userId,
+						examId: examId,
+						questionId: questionId,
+						answerId: answerId,
+						isCorrect: isCorrect
+					},
+					success: function (response) {
+						console.log("Success");
+						// Handle success response if needed
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						console.log("Error: " + errorThrown);
+						// Handle error if needed
+					}
+				});
+			}
+		});
+	});
+</script>
+
