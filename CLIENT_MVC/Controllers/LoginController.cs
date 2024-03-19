@@ -37,7 +37,8 @@ namespace CLIENT_MVC.Controllers
 					var loginResult = JsonConvert.DeserializeObject<LoginResult>(result.Body);
 					_apiHelper.BearerToken = loginResult.Token;
 					HttpContext.Session.SetString("Username", loginResult.Username);
-					return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetInt32("UserId", loginResult.Id);
+                    return RedirectToAction("Index", "Home");
 				}
 				else if (result.Response.StatusCode == HttpStatusCode.BadRequest)
 				{

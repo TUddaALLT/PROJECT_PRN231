@@ -38,7 +38,6 @@ namespace PROJECT_PRN231.Repository
                 {
                     AnswerId = item.AnswerId,
                     ExamId = item.ExamId,
-                    Id = item.Id,
                     IsCorrect = item.IsCorrect,
                     QuestionId = item.QuestionId,
                     UserId = item.UserId
@@ -61,7 +60,6 @@ namespace PROJECT_PRN231.Repository
                 {
                     AnswerId = item.AnswerId,
                     ExamId = item.ExamId,
-                    Id = item.Id,
                     IsCorrect = item.IsCorrect,
                     QuestionId = item.QuestionId,
                     UserId = item.UserId
@@ -73,6 +71,12 @@ namespace PROJECT_PRN231.Repository
         public UserExamQuestionAnswer GetById(int id)
         {
             return _context.UserExamQuestionAnswers.Find(id);
+        }
+
+        public UserExamQuestionAnswer IsQuestionAnswered(int questionId, int examId, int userId)
+        {
+            var exist = _context.UserExamQuestionAnswers.Where(x=> x.UserId == userId && x.ExamId == examId && x.QuestionId == questionId).FirstOrDefault();
+            return exist;
         }
 
         public bool Save()

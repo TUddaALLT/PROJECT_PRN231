@@ -7,6 +7,7 @@ namespace PROJECT_PRN231.Interface
     {
         List<ExamQuestion> GetAll();
         ExamQuestion GetById(int id);
+        List<ExamQuestion> GetAllQuestionsOfExam(int examId);
         ExamQuestion Create(ExamQuestionVM examQuestionVM);
         void Update(ExamQuestion examQuestionVM);
         void Delete(int id);

@@ -24,7 +24,7 @@ namespace PROJECT_PRN231.Controllers
             _examRepository = examRepository;
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace PROJECT_PRN231.Controllers
 
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
@@ -53,7 +53,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpGet("userId/{userId}")]
         public IActionResult GetByUser(int userId)
         {
@@ -69,7 +69,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpPost]
         public IActionResult Create([FromBody] UserExamResultVM userExamResultVM)
         {
@@ -96,7 +96,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpPut("{id}")]
         public IActionResult Update(int id)
         {
@@ -116,7 +116,7 @@ namespace PROJECT_PRN231.Controllers
             userExamResult.EndTime = DateTime.Now;
             if (_userExamResultRepository.UpdateUserExamResult(userExamResult))
             {
-                return Ok("Result updated");
+                return Ok($"Result updated score: {userExamResult.Score}");
             }
             else
             {
@@ -125,7 +125,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
