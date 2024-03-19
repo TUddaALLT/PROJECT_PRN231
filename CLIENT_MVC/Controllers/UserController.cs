@@ -5,6 +5,7 @@ using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.Account;
 using PROJECT_PRN231.Models.Mail;
 using System.Net;
+using PROJECT_PRN231.Utilities;
 
 namespace CLIENT_MVC.Controllers
 {
