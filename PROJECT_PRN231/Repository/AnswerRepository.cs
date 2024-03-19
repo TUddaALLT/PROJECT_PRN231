@@ -1,4 +1,5 @@
-﻿using PROJECT_PRN231.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
 
@@ -20,12 +21,12 @@ namespace PROJECT_PRN231.Repository
                 Value = answerVM.Value,
                 IsCorrect = answerVM.IsCorrect,
             };
-            _context.Add(_new);
+            _context.Answers.Add(_new);
             _context.SaveChanges();
-
-            return new Answer { 
+            return new Answer
+            {
                 AnswerId = _new.AnswerId,
-                QuestionId = answerVM.QuestionId, 
+                QuestionId = answerVM.QuestionId,
                 Value = answerVM.Value,
                 IsCorrect = answerVM.IsCorrect,
             };
@@ -54,6 +55,7 @@ namespace PROJECT_PRN231.Repository
             {
                 return new Answer
                 {
+                    AnswerId = find.AnswerId,
                     QuestionId = find.QuestionId,
                     Value = find.Value,
                     IsCorrect = find.IsCorrect,
@@ -62,14 +64,33 @@ namespace PROJECT_PRN231.Repository
             return null;
         }
 
-        public void Update(Answer answer)
+        public List<Answer> GetByQuestionId(int id)
         {
-            var find = _context.Answers.FirstOrDefault(f => f.AnswerId == answer.AnswerId);
+            var answers = _context.Answers.Where(a => a.QuestionId == id).ToList();
+
+            if (answers != null && answers.Any())
+            {
+                return answers.Select(answer => new Answer
+                {
+                    AnswerId = answer.AnswerId,
+                    QuestionId = answer.QuestionId,
+                    Value = answer.Value,
+                    IsCorrect = answer.IsCorrect
+                }).ToList();
+            }
+
+            return null;
+        }
+
+
+        public void Update(int id, AnswerVM answerVM)
+        {
+            var find = _context.Answers.FirstOrDefault(f => f.AnswerId == id);
             if (find != null)
             {
-                find.QuestionId = answer.QuestionId;
-                find.Value = answer.Value;
-                find.IsCorrect = answer.IsCorrect;
+                find.QuestionId = answerVM.QuestionId;
+                find.Value = answerVM.Value;
+                find.IsCorrect = answerVM.IsCorrect;
                 _context.SaveChanges();
             }
         }

@@ -29,6 +29,7 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("id")]
         public IActionResult Get(int id)
         {
@@ -46,7 +47,26 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest();
             }
         }
-        [HttpPost]
+
+        [HttpGet("GetByQuestionId/id")]
+        public IActionResult GetByQuestionId(int id)
+        {
+            try
+            {
+                var find = AnswerRepository.GetByQuestionId(id);
+                if (find == null)
+                {
+                    return NotFound("Not found!");
+                }
+                return Ok(find);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("Add")]
         public IActionResult Create(AnswerVM answerVM)
         {
             try
@@ -58,16 +78,13 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("id")]
-        public ActionResult Update(int id, Answer answer)
+
+        [HttpPut("Update/{id}")]
+        public ActionResult Update(int id, AnswerVM answerVM)
         {
-            if (id != answer.AnswerId)
-            {
-                return NotFound("Not found!");
-            }
             try
             {
-                AnswerRepository.Update(answer);
+                AnswerRepository.Update(id, answerVM);
                 return Ok("Update success!");
             }
             catch (Exception ex)
@@ -76,7 +93,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {
             var find = AnswerRepository.GetById(id);

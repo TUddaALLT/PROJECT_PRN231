@@ -8,7 +8,9 @@ namespace PROJECT_PRN231.Interface
         List<Answer> GetAll();
         Answer GetById(int id);
         Answer Create(AnswerVM answerVM);
-        void Update(Answer answerVM);
+        void Update(int id, AnswerVM answerVM);
         void Delete(int id);
+
+        List<Answer> GetByQuestionId(int id);
     }
 }

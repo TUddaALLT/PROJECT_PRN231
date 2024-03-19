@@ -36,12 +36,10 @@
                         <th>@item.QuestionId</th>
                         <th>@item.QuestionText</th>
                         <th>@item.DifficultyLevel</th>
-                        <td class="col-1"><a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a></td>
                         <td>
+                            <a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a>
+                            <a href="answer/List/@item.QuestionId"><button class="btn btn-danger">Manage Answer</button></a>
                             <button class="btn btn-danger" onclick="deleteQuestion('@item.QuestionId')">Delete</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger" onclick="createAnswer('@item.QuestionId')">Create Answer</button>
                         </td>
                     </tr>
                 }
@@ -150,7 +148,6 @@
             sortById();
         }
     });
-
 
 </script>
 
