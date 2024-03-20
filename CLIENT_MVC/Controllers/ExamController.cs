@@ -38,26 +38,12 @@ namespace CLIENT_MVC.Controllers
         {
             return View();
         }
-        [HttpGet]
-        public async Task<IActionResult> AddQuestionToExam(int? id)
-        {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
-            string strData = await respone.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
-            ViewBag.Questions = list;
-            ViewBag.ExamId = id;
-      
-            return View();
-        }
+
         [HttpGet]
         public async Task<IActionResult> ListAllQuestion(int? id)
         {
-            HttpResponseMessage respone = await 
-                client.GetAsync("https://localhost:8080/api/Question/GetAllByExamId?id="+id);
+            HttpResponseMessage respone = await
+                client.GetAsync("https://localhost:8080/api/Question/GetAllByExamId?id=" + id);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -68,11 +54,11 @@ namespace CLIENT_MVC.Controllers
             return View();
         }
         [HttpPost]
-		public async Task<IActionResult> AddQuestionToExamPost(int QuestionId, int ExamId)
-		{
+        public async Task<IActionResult> AddQuestionToExamPost(int QuestionId, int ExamId)
+        {
             ExamQuestion examQuestion = new ExamQuestion();
             examQuestion.QuestionId = QuestionId;
-            examQuestion.ExamId=ExamId;
+            examQuestion.ExamId = ExamId;
             var json = System.Text.Json.JsonSerializer.Serialize(examQuestion);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -88,10 +74,10 @@ namespace CLIENT_MVC.Controllers
                 // Xử lý lỗi nếu cần
                 return View("Error");
             }
-            
-		}
 
-		[HttpPost]
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Add(Exam exam)
         {
             try

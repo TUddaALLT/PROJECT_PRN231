@@ -78,7 +78,7 @@ namespace CLIENT_MVC.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(int id)
         {
             HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
             string strData = await respone.Content.ReadAsStringAsync();
@@ -88,6 +88,7 @@ namespace CLIENT_MVC.Controllers
             };
             var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
             ViewBag.Questions = list;
+            ViewBag.QuestionId = id;
             return View();
         }
 
