@@ -117,7 +117,7 @@ namespace PROJECT_PRN231.Controllers
             var examAnswers = _userExamQuestionAnswerRepository.GetAllUserAnswerInExam(pendingResult.UserId.Value, pendingResult.ExamId.Value);
             var correctAnswers = examAnswers.Where(x => x.IsCorrect == true).Count();
             var answersCount = _examRepository.GetQuestionCount(pendingResult.ExamId.Value);
-            pendingResult.Score = (10 / answersCount) * correctAnswers;
+            pendingResult.Score = (10d / answersCount) * correctAnswers;
 			pendingResult.EndTime = DateTime.Now;
             if (!_userExamQuestionAnswerRepository.DeleteUserExamQuestionAnswer(examAnswers))
             {
