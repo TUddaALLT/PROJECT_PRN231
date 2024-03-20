@@ -77,6 +77,11 @@ namespace PROJECT_PRN231.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var pendingResult = _userExamResultRepository.GetPendingResult(userExamResultVM.UserId.Value, userExamResultVM.ExamId.Value);
+            if (pendingResult != null)
+            {
+                return Ok(pendingResult);
+            }
             var userExamResult = new UserExamResult
             {
                 UserId = userExamResultVM.UserId,
@@ -87,7 +92,7 @@ namespace PROJECT_PRN231.Controllers
             };
             if (_userExamResultRepository.AddUserExamResult(userExamResult))
             {
-                return Ok("Result added");
+                return Ok(userExamResult);
             }
             else
             {
@@ -97,26 +102,26 @@ namespace PROJECT_PRN231.Controllers
         }
 
         //[Authorize(Roles = "Admin,User")]
-        [HttpPut("{id}")]
-        public IActionResult Update(int id)
+        [HttpPut("{userId}/{examId}")]
+        public IActionResult Update(int userId, int examId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var userExamResult = _userExamResultRepository.GetById(id);
-            if (userExamResult == null)
+            var pendingResult = _userExamResultRepository.GetPendingResult(userId, examId);
+            if (pendingResult == null)
             {
-                return NotFound($"Result with {id} not found");
+                return NotFound($"Result of userId {userId} with examId {examId} not found");
             }
-            var examAnswers = _userExamQuestionAnswerRepository.GetAllUserAnswerInExam(userExamResult.UserId.Value, userExamResult.ExamId.Value);
+            var examAnswers = _userExamQuestionAnswerRepository.GetAllUserAnswerInExam(pendingResult.UserId.Value, pendingResult.ExamId.Value);
             var correctAnswers = examAnswers.Where(x => x.IsCorrect == true).Count();
-            var answersCount = _examRepository.GetQuestionCount(userExamResult.ExamId.Value);
-            userExamResult.Score = (10 / answersCount) * correctAnswers;
-            userExamResult.EndTime = DateTime.Now;
-            if (_userExamResultRepository.UpdateUserExamResult(userExamResult))
+            var answersCount = _examRepository.GetQuestionCount(pendingResult.ExamId.Value);
+            pendingResult.Score = (10 / answersCount) * correctAnswers;
+			pendingResult.EndTime = DateTime.Now;
+            if (_userExamResultRepository.UpdateUserExamResult(pendingResult) && _userExamQuestionAnswerRepository.DeleteUserExamQuestionAnswer(examAnswers))
             {
-                return Ok($"Result updated score: {userExamResult.Score}");
+                return Ok(pendingResult);
             }
             else
             {

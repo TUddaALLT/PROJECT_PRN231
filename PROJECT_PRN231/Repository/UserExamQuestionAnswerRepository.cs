@@ -24,7 +24,14 @@ namespace PROJECT_PRN231.Repository
             return Save();
         }
 
-        public List<UserExamQuestionAnswerVM> GetAll()
+        public bool DeleteUserExamQuestionAnswer(List<UserExamQuestionAnswer> list)
+        {
+            _context.UserExamQuestionAnswers.RemoveRange(list);
+            return Save();
+        }
+
+
+		public List<UserExamQuestionAnswerVM> GetAll()
         {
             var list = _context.UserExamQuestionAnswers.ToList();
             if (list == null)
@@ -46,26 +53,26 @@ namespace PROJECT_PRN231.Repository
             return listVM;
         }
 
-        public List<UserExamQuestionAnswerVM> GetAllUserAnswerInExam(int userId, int examId)
+        public List<UserExamQuestionAnswer> GetAllUserAnswerInExam(int userId, int examId)
         {
-            var list = _context.UserExamQuestionAnswers.Where(x => x.UserId == userId && x.ExamId == examId).ToList();
-            if (list == null)
-            {
-                return null;
-            }
-            var listVM = new List<UserExamQuestionAnswerVM>();
-            foreach (var item in list)
-            {
-                listVM.Add(new UserExamQuestionAnswerVM
-                {
-                    AnswerId = item.AnswerId,
-                    ExamId = item.ExamId,
-                    IsCorrect = item.IsCorrect,
-                    QuestionId = item.QuestionId,
-                    UserId = item.UserId
-                });
-            }
-            return listVM;
+            return _context.UserExamQuestionAnswers.Where(x => x.UserId == userId && x.ExamId == examId).ToList();
+            //if (list == null)
+            //{
+            //    return null;
+            //}
+            //var listVM = new List<UserExamQuestionAnswerVM>();
+            //foreach (var item in list)
+            //{
+            //    listVM.Add(new UserExamQuestionAnswerVM
+            //    {
+            //        AnswerId = item.AnswerId,
+            //        ExamId = item.ExamId,
+            //        IsCorrect = item.IsCorrect,
+            //        QuestionId = item.QuestionId,
+            //        UserId = item.UserId
+            //    });
+            //}
+            //return listVM;
         }
 
         public UserExamQuestionAnswer GetById(int id)

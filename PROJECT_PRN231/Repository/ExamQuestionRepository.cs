@@ -49,7 +49,7 @@ namespace PROJECT_PRN231.Repository
 
         public List<ExamQuestion> GetAllQuestionsOfExam(int examId)
         {
-            var list = _context.ExamQuestions.Where(x => x.ExamId == examId).Include(x => x.Question).ThenInclude(x => x.Answers).ToList();
+            var list = _context.ExamQuestions.Where(x => x.ExamId == examId).Include(x => x.Question).ThenInclude(x => x.Answers).ThenInclude(x => x.UserExamQuestionAnswers).ToList();
             return list;
         }
 

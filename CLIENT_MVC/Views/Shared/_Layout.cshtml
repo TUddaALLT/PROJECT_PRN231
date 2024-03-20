@@ -37,6 +37,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Answer" asp-action="Index">Answer Manager</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserExamResult" asp-action="Index">Exam result</a>
+                        </li>
                     </ul>
 					@{
 						string username = Accessor.HttpContext.Session.GetString("Username");

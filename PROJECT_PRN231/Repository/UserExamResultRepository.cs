@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿    using Microsoft.EntityFrameworkCore;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
@@ -56,29 +56,35 @@ namespace PROJECT_PRN231.Repository
             return _context.UserExamResults.Find(id);
         }
 
-        public List<UserExamResultVM> GetByUserId(int userId)
+        public List<UserExamResult> GetByUserId(int userId)
         {
-            var list = _context.UserExamResults.Where(x => x.UserId == userId).ToList();
-            if (list.Count == 0)
-            {
-                return null;
-            }
-            var listVM = new List<UserExamResultVM>();
-            foreach (var item in list)
-            {
-                listVM.Add(new UserExamResultVM
-                {
-                    UserId = item.UserId,
-                    ExamId = item.ExamId,
-                    Score = item.Score,
-                    StartTime = item.StartTime,
-                    EndTime = item.EndTime
-                });
-            }
-            return listVM;
+            return _context.UserExamResults.Where(x => x.UserId == userId).Include(x => x.Exam).OrderByDescending(x=> x.ExamId).OrderByDescending(x => x.StartTime).ToList();
+            //if (list.Count == 0)
+            //{
+            //    return null;
+            //}
+            //var listVM = new List<UserExamResultVM>();
+            //foreach (var item in list)
+            //{
+            //    listVM.Add(new UserExamResultVM
+            //    {
+            //        UserId = item.UserId,
+            //        ExamId = item.ExamId,
+            //        Score = item.Score,
+            //        StartTime = item.StartTime,
+            //        EndTime = item.EndTime
+            //    });
+            //}
+            //return listVM;
         }
 
-        public bool Save()
+		public UserExamResult GetPendingResult(int userId, int examId)
+		{
+            var pendingResult = _context.UserExamResults.Where(x => x.UserId == userId && x.ExamId == examId && x.EndTime == null).FirstOrDefault();
+            return pendingResult;
+		}
+
+		public bool Save()
         {
             int save = _context.SaveChanges();
             return save > 0 ? true : false;
