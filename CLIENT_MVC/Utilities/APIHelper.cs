@@ -67,7 +67,7 @@ namespace CLIENT_MVC.Utilities
             }
         }
 
-        public async Task<ApiResponse> RequestPutAsync<T>(string path, T body, bool useAuthorization = false)
+        public async Task<ApiResponse> RequestPutAsync<T>(string path, T? body, bool useAuthorization = false)
         {
             using (var client = new HttpClient())
             {
@@ -91,5 +91,5 @@ namespace CLIENT_MVC.Utilities
                 return apiResponse;
             }
         }
-    }
+	}
 }

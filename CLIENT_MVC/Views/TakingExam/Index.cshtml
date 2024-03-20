@@ -18,19 +18,38 @@
 			<div>
 				@foreach (var answer in item.Question.Answers)
 				{
-					<input type="radio"
-						   name="answer"
-						   value="@answer.AnswerId"
-						   data-questionId="@answer.QuestionId"
-						   data-examId="@Model.FirstOrDefault().ExamId"
-						   data-userId="@userId"
-						   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
-					<!-- Add more options as needed -->
+					if (answer.UserExamQuestionAnswers.Count > 0)
+					{
+						<input type="radio"
+							   name="answer"
+							   value="@answer.AnswerId"
+							   data-questionId="@answer.QuestionId"
+							   data-examId="@Model.FirstOrDefault().ExamId"
+							   data-userId="@userId"
+							   data-isCorrect="@answer.IsCorrect"
+							   checked/> @answer.Value <br />
+					}
+					else
+					{
+						<input type="radio"
+							   name="answer"
+							   value="@answer.AnswerId"
+							   data-questionId="@answer.QuestionId"
+							   data-examId="@Model.FirstOrDefault().ExamId"
+							   data-userId="@userId"
+							   data-isCorrect="@answer.IsCorrect"
+							   /> @answer.Value <br />
+					}
+
+					
 				}
 			</div>
 		</form>
 	</div>
 }
+<div>
+	<a asp-action="FinishExam" asp-route-userId="@userId" asp-route-examId="@Model.FirstOrDefault().ExamId">Finish exam</a>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	$(document).ready(function () {
@@ -41,12 +60,13 @@
 				var questionId = $(this).attr("data-questionId");
 				var answerId = $(this).val();
 				var isCorrect = $(this).attr("data-isCorrect");
-					// Add more properties as needed
+				// Add more properties as needed
 				// Make AJAX call to the controller method
 				$.ajax({
 					type: "POST",
 					url: "TakingExam/SelectAnswer",
-					data: { userId: userId,
+					data: {
+						userId: userId,
 						examId: examId,
 						questionId: questionId,
 						answerId: answerId,
