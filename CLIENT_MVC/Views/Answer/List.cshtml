@@ -10,7 +10,7 @@
         <div>
             <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a id="addButton" class="btn btn-primary">Add</a>
+            <a href="@Url.Action("Add", "Answer", new { id = ViewBag.QuestionId })"><button class="btn btn-primary">Add</button></a>
         </div>
         <table class="table" id="examAnswer">
             <thead>
@@ -47,11 +47,3 @@
         </table>
     </div>
 </div>
-<script>
-    document.getElementById("addButton").addEventListener("click", function (event) {
-        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
-        var currentURL = window.location.href; // Lấy URL hiện tại
-        var newURL = currentURL.replace("/Index/1", "/Add"); // Thay đổi phần của URL cần thay đổi
-        window.location.href = newURL; // Chuyển hướng đến URL mới
-    });
-</script>
