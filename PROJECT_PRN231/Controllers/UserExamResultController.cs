@@ -80,7 +80,7 @@ namespace PROJECT_PRN231.Controllers
             var pendingResult = _userExamResultRepository.GetPendingResult(userExamResultVM.UserId.Value, userExamResultVM.ExamId.Value);
             if (pendingResult != null)
             {
-                return Ok(pendingResult);
+                Update(userExamResultVM.UserId.Value, userExamResultVM.ExamId.Value);
             }
             var userExamResult = new UserExamResult
             {
@@ -119,7 +119,12 @@ namespace PROJECT_PRN231.Controllers
             var answersCount = _examRepository.GetQuestionCount(pendingResult.ExamId.Value);
             pendingResult.Score = (10 / answersCount) * correctAnswers;
 			pendingResult.EndTime = DateTime.Now;
-            if (_userExamResultRepository.UpdateUserExamResult(pendingResult) && _userExamQuestionAnswerRepository.DeleteUserExamQuestionAnswer(examAnswers))
+            if (!_userExamQuestionAnswerRepository.DeleteUserExamQuestionAnswer(examAnswers))
+            {
+				ModelState.AddModelError("", "Something went wrong while deleting record");
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+            if (_userExamResultRepository.UpdateUserExamResult(pendingResult))
             {
                 return Ok(pendingResult);
             }

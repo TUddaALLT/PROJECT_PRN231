@@ -3,6 +3,8 @@
 @{
 	ViewData["Title"] = "Index";
 	int userId = Accessor.HttpContext.Session.GetInt32("UserId").Value;
+	string? examTimeString = ViewData["ExamTime"].ToString();
+	int examTime = int.Parse(examTimeString);
 }
 
 <h1>Index</h1>
@@ -10,6 +12,7 @@
 <p>
 	Question
 </p>
+<div id="countdown">@examTime</div>
 @foreach (var item in Model)
 {
 	<div>
@@ -27,7 +30,7 @@
 							   data-examId="@Model.FirstOrDefault().ExamId"
 							   data-userId="@userId"
 							   data-isCorrect="@answer.IsCorrect"
-							   checked/> @answer.Value <br />
+							   checked /> @answer.Value <br />
 					}
 					else
 					{
@@ -37,11 +40,10 @@
 							   data-questionId="@answer.QuestionId"
 							   data-examId="@Model.FirstOrDefault().ExamId"
 							   data-userId="@userId"
-							   data-isCorrect="@answer.IsCorrect"
-							   /> @answer.Value <br />
+							   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
 					}
 
-					
+
 				}
 			</div>
 		</form>
@@ -84,5 +86,31 @@
 			}
 		});
 	});
+</script>
+
+<script>
+	var countdownElement = document.getElementById('countdown');
+	var remainingTimeInSeconds = @examTime;
+
+	function updateCountdown() {
+		remainingTimeInSeconds--;
+		if (remainingTimeInSeconds <= 0) {
+			clearInterval(countdownInterval);
+			// Change the URL when countdown finishes
+			var url = '@Url.Action("FinishExam", "TakingExam")?userId=' + @userId+'&examId=' + @Model.FirstOrDefault().ExamId
+			window.location.href = url;
+		} else {
+			countdownElement.innerText = formatTime(remainingTimeInSeconds);
+		}
+	}
+
+	var countdownInterval = setInterval(updateCountdown, 1000);
+
+	function formatTime(seconds) {
+		var minutes = Math.floor(seconds / 60);
+		seconds = Math.floor(seconds % 60);
+
+		return ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+	}
 </script>
 
