@@ -1,4 +1,5 @@
 using CLIENT_MVC.Utilities;
+using PROJECT_PRN231;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<APIHelper>();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<AppSettings>(
+    builder.Configuration.GetSection("ApplicationSettings"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
