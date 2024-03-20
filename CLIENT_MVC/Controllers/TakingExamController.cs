@@ -12,6 +12,7 @@ namespace CLIENT_MVC.Controllers
 		const string CONTROLLER_EXAMQUESTION = "ExamQuestion/";
 		const string CONTROLLER_USEREXAMQUESTIONANSWER = "UserExamQuestionAnswer/";
 		const string CONTROLLER_USEREXAMRESULT = "UserExamResult/";
+		const string CONTROLLER_EXAM = "Exam/";
 
 		private UserExamResult UserExamResult { get; set; }
 		private readonly APIHelper _apiHelper;
@@ -24,6 +25,11 @@ namespace CLIENT_MVC.Controllers
 			if (examId == null)
 			{
 				return BadRequest("No examId");
+			}
+			var getExam = await _apiHelper.RequestGetAsync<Exam>(CONTROLLER_EXAM + $"id?id={examId}");
+			if (getExam != null) 
+			{
+				ViewData["ExamTime"] = getExam.Duration * 60;
 			}
 			var viewModel = new UserExamResultVM
 			{
@@ -58,16 +64,16 @@ namespace CLIENT_MVC.Controllers
 				QuestionId = int.Parse(questionId),
 				UserId = int.Parse(userId)
 			};
-			var result = await _apiHelper.RequestPostAsync<UserExamQuestionAnswerVM>(CONTROLLER_USEREXAMQUESTIONANSWER + "SelectAnswer", model);
-			if (result.Response.IsSuccessStatusCode)
-			{
-				ViewBag.Result = result.Body;
-				//return RedirectToAction("Index", "Home");
-			}
-			else if (result.Response.StatusCode == HttpStatusCode.BadRequest || result.Response.StatusCode == HttpStatusCode.NotFound)
-			{
-				ViewBag.Validate = result.Body;
-			}
+			await _apiHelper.RequestPostAsync<UserExamQuestionAnswerVM>(CONTROLLER_USEREXAMQUESTIONANSWER + "SelectAnswer", model);
+			//if (result.Response.IsSuccessStatusCode)
+			//{
+			//	ViewBag.Result = result.Body;
+			//	//return RedirectToAction("Index", "Home");
+			//}
+			//else if (result.Response.StatusCode == HttpStatusCode.BadRequest || result.Response.StatusCode == HttpStatusCode.NotFound)
+			//{
+			//	ViewBag.Validate = result.Body;
+			//}
 		}
 
 		public async Task<IActionResult> FinishExam(int? userId, int? examId)
