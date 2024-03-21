@@ -24,7 +24,7 @@ namespace PROJECT_PRN231.Controllers
             _examRepository = examRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace PROJECT_PRN231.Controllers
 
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "ADMIN,USER")]
         [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
@@ -53,7 +53,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "ADMIN,USER")]
         [HttpGet("userId/{userId}")]
         public IActionResult GetByUser(int userId)
         {
@@ -69,7 +69,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "ADMIN,USER")]
         [HttpPost]
         public IActionResult Create([FromBody] UserExamResultVM userExamResultVM)
         {
@@ -101,7 +101,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "ADMIN,USER")]
         [HttpPut("{userId}/{examId}")]
         public IActionResult Update(int userId, int examId)
         {
@@ -135,7 +135,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

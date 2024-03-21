@@ -26,7 +26,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "ADMIN,USER")]
         [HttpPost("SelectAnswer")]
         public IActionResult SelectAnswer([FromBody]UserExamQuestionAnswerVM viewModel)
         {
