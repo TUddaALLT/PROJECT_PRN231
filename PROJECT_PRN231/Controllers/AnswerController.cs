@@ -4,6 +4,7 @@ using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models.ViewModel;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PROJECT_PRN231.Controllers
 {
