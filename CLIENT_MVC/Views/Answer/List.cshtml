@@ -34,7 +34,7 @@
                             <td>@item.Value</td>
                             <td>@item.IsCorrect</td>
                             <td>
-                                <a href="exam/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                <a href="https://localhost:7284/Answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
                                 <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
                             </td>
                         </tr>
@@ -69,3 +69,27 @@
 
     <button type="submit" class="btn btn-primary" onclick="return showSuccessMessage()">Add</button>
 </form>
+
+<script>
+    function deleteQuestion(answerId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this answer?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Answer/Delete/${answerId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${answerId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+</script>
