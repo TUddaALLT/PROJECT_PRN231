@@ -3,7 +3,7 @@
 *@
 @{
 }
-<h1>List Answer for Question @ViewBag.QuestionId</h1>
+<h2>List Answer for Question @ViewBag.QuestionId</h2>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -24,9 +24,6 @@
             <tbody id="answerTableBody">
                 @if (ViewBag.Answers == null || ViewBag.Answers.Count == 0)
                 {
-                    <tr>
-                        <td colspan="4"><h1>Danh sách đáp án rỗng</h1></td>
-                    </tr>
                 }
                 else
                 {
