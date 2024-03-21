@@ -28,26 +28,7 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Register" asp-action="Register">Register</a>
 						</li>
-@* 						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Question" asp-action="Index">Question Manager</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Exam" asp-action="Index">Exam Manager</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Answer" asp-action="Index">Answer Manager</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="UserExamResult" asp-action="Index">Exam result</a>
-						</li> *@
-					</ul>
-					@* 					@{
-					string username = Accessor.HttpContext.Session.GetString("Username");
-					}
-					@if (username != null)
-					{
-					<div class="ml-auto text-dark"><a class="nav-link text-dark" asp-controller="User" asp-action="Index">Wellcome, @username</a></div>
-					} *@
+
 				</div>
 			</div>
 		</nav>
@@ -57,12 +38,7 @@
 			@RenderBody()
 		</main>
 	</div>
-
-	@* <footer class="border-bottom footer text-muted">
-	<div class="container">
-	&copy; 2024 - Exam System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-	</div>
-	</footer> *@
+ 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

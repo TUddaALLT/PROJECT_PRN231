@@ -74,22 +74,26 @@
         <div class="row justify-content-center">
             <div class="search-container">
                 <div>
-                    <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
-                    <button class="btn btn-primary" onclick="searchByName()">Search</button>
-                    <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
+                @*     <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+                    <button class="btn btn-primary" onclick="searchByName()">Search</button> *@
+
+                    @{
+                        string? username = Accessor.HttpContext.Session.GetString("Username");
+                        string? role = Accessor.HttpContext.Session.GetString("Role");
+                        if (string.Equals(role, "ADMIN", StringComparison.OrdinalIgnoreCase))
+                        {
+                               <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
+                        }
+                    }
+                    
+                 
                 </div>
-                <div>
-                    <select id="sortSelect">
-                        <option value="sort">Sort</option>
-                        <option value="name">Sort by Name</option>
-                        <option value="id">Sort by Id</option>
-                    </select>
-                </div>
+               
             </div>
             <table class="table" id="examTable">
                 <thead>
                     <tr>
-                        <th>Exam Id</th>
+                      
                         <th>Exam Name</th>
                         <th>Duration</th>
                         <th>Action</th>
@@ -99,15 +103,25 @@
                     @foreach (var item in ViewBag.Exams)
                     {
                         <tr id="row_@item.ExamId">
-                            <td>@item.ExamId</td>
+                            
                             <td>@item.ExamName</td>
                             <td>@item.Duration</td>
                             <td class="action-buttons">
                                 <button class="btn btn-danger"><a asp-controller="TakingExam" asp-action="Index" asp-route-examId="@item.ExamId">Take exam</a></button>
-                                <button class="btn btn-primary"><a href="exam/Update/@item.ExamId">Update</a></button>
-                                <button class="btn btn-primary"><a href="examquestion/Index/@item.ExamId">Manage question</a></button>
-                                <button class="btn btn-danger"><a href="question/index">View all questions</a></button>
-                                <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
+
+                                @{
+                                     if (string.Equals(role, "ADMIN", StringComparison.OrdinalIgnoreCase))
+                                    {
+
+                                        <button class="btn btn-primary"><a href="exam/Update/@item.ExamId">Update</a></button>
+                                        <button class="btn btn-primary"><a href="examquestion/Index/@item.ExamId">Manage question</a></button>
+                                        <button class="btn btn-danger"><a href="question/index">View all questions</a></button>
+                                        <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
+                                    } 
+                                }
+
+                                
+                              
                             </td>
                         </tr>
                     }

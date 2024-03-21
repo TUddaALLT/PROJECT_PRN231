@@ -87,7 +87,7 @@
 
 
     <div class="mb-3">
-        <label for="questionText" class="form-label">Question Text</label>
+        <label for="questionText" class="form-label">Question </label>
         <select id="questionText" name="QuestionId" class="form-select" required>
             <option value="">Select a Question  </option>
             @foreach (var question in ViewBag.Questions)
@@ -97,10 +97,7 @@
         </select>
     </div>
 
-    <div class="mb-3">
-        <label for="" class="form-label">Question Order</label>
-        <input type="number" id="questionOrder" name="QuestionOrder" class="form-control" required>
-    </div>
+    
 
     <button type="submit" class="btn btn-primary" onclick="return showSuccessMessage()">Add</button>
 </form>
