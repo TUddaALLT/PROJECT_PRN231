@@ -39,11 +39,13 @@ namespace CLIENT_MVC.Controllers
                 }
                 else
                 {
+                    ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                     return View();
                 }
             }
             else
             {
+                ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                 return View();
             }
         }
@@ -76,7 +78,23 @@ namespace CLIENT_MVC.Controllers
             }
         }
 
+        //Add to list All
+        [HttpGet]
+        public async Task<IActionResult> AddToAll(int id)
+        {
+            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            string strData = await respone.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
+            ViewBag.Questions = list;
+            ViewBag.QuestionId = id;
+            return View();
+        }
 
+        //Add for each question
         [HttpGet]
         public async Task<IActionResult> Add(int id)
         {
