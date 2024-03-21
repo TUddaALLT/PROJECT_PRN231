@@ -122,7 +122,9 @@ namespace CLIENT_MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
                 }
                 else
                 {

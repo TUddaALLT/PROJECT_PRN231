@@ -44,3 +44,28 @@
         </table>
     </div>
 </div>
+
+<h1>Add new Answer</h1>
+<form method="post" action="Add" class="mt-5" id="addAnswer">
+
+    <div class="mb-3">
+        <label for="questionId" class="form-label">QuestionId</label>
+        <input type="number" id="questionId" name="QuestionId" class="form-control" value="@ViewBag.QuestionId" readonly>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="" class="form-label">Value</label>
+        <input type="text" id="name" name="Value" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="isCorrect" class="form-label">Is Correct</label>
+        <select id="isCorrect" name="isCorrect" class="form-control" required>
+            <option id="true" value="true">True</option>
+            <option id="true" value="false">False</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="return showSuccessMessage()">Add</button>
+</form>
