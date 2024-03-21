@@ -10,7 +10,7 @@
         <div>
             <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a href="@Url.Action("Add", "Answer", new { id = ViewBag.QuestionId })"><button class="btn btn-primary">Add</button></a>
+@*             <a href="@Url.Action("Add", "Answer", new { id = ViewBag.QuestionId })"><button class="btn btn-primary">Add</button></a> *@
         </div>
         <table class="table" id="examAnswer">
             <thead>
@@ -34,7 +34,7 @@
                             <td>@item.Value</td>
                             <td>@item.IsCorrect</td>
                             <td>
-                                <a href="exam/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                <a href="https://localhost:7284/Answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
                                 <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
                             </td>
                         </tr>
@@ -44,3 +44,52 @@
         </table>
     </div>
 </div>
+
+<h1>Add new Answer</h1>
+<form method="post" action="Add" class="mt-5" id="addAnswer">
+
+    <div class="mb-3">
+        <label for="questionId" class="form-label">QuestionId</label>
+        <input type="number" id="questionId" name="QuestionId" class="form-control" value="@ViewBag.QuestionId" readonly>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="" class="form-label">Value</label>
+        <input type="text" id="name" name="Value" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="isCorrect" class="form-label">Is Correct</label>
+        <select id="isCorrect" name="isCorrect" class="form-control" required>
+            <option id="true" value="true">True</option>
+            <option id="true" value="false">False</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="return showSuccessMessage()">Add</button>
+</form>
+
+<script>
+    function deleteQuestion(answerId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this answer?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Answer/Delete/${answerId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${answerId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+</script>

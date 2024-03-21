@@ -50,6 +50,36 @@ namespace CLIENT_MVC.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> List(Answer answer)
+        {
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(answer);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(BaseUrl + "/Add", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
+                }
+                else
+                {
+                    Console.WriteLine(response);
+                    // Xử lý lỗi nếu cần
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý exception nếu cần
+                return View("Error");
+            }
+        }
+
         public async Task<IActionResult> Index(int id)
         {
             HttpResponseMessage response = await client.GetAsync(BaseUrl);
@@ -94,21 +124,6 @@ namespace CLIENT_MVC.Controllers
             return View();
         }
 
-        //Add for each question
-        [HttpGet]
-        public async Task<IActionResult> Add(int id)
-        {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
-            string strData = await respone.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            var list = System.Text.Json.JsonSerializer.Deserialize<List<Question>>(strData, options) ?? new List<Question>();
-            ViewBag.Questions = list;
-            ViewBag.QuestionId = id;
-            return View();
-        }
 
         [HttpPost]
         public async Task<IActionResult> Add(Answer answer)
@@ -122,7 +137,9 @@ namespace CLIENT_MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
                 }
                 else
                 {
@@ -179,7 +196,9 @@ namespace CLIENT_MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
                 }
                 else
                 {
