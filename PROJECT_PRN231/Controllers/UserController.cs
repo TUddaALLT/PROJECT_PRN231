@@ -23,7 +23,7 @@ namespace PROJECT_PRN231.Controllers
             _userRepository = userRepository;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("GetAll")]
         public IActionResult GetAllUsers()
         {
@@ -35,7 +35,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpGet("Detail/{username}")]
         public IActionResult GetByUsername(string username)
         {
@@ -50,7 +50,7 @@ namespace PROJECT_PRN231.Controllers
 
 
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPut("ChangePassword")]
         public IActionResult ChangePassword([FromBody] ChangePassword model)
         {
@@ -122,7 +122,7 @@ namespace PROJECT_PRN231.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("DeleteUser")]
         public IActionResult Delete([FromBody] string userName)
         {
@@ -147,7 +147,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPost("SendMailOTP")]
         public async Task<IActionResult> SendMailOTP([FromBody] SendOTP model)
         {
@@ -197,7 +197,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPost("ConfirmOTP")]
         public IActionResult ConfirmOTP([FromBody] OTPResponse model)
         {
