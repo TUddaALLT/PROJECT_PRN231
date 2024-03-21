@@ -52,9 +52,9 @@
 <table>
     <thead>
         <tr>
-            <th>ExamQuestion ID</th>
-            <th>Question ID</th>
-            <th>Question Text</th>
+            
+            
+            <th>Question </th>
             <th>Difficulty Level</th>
             <th>Action</th>
         </tr>
@@ -63,8 +63,8 @@
         @foreach (var item in ViewBag.ExamQuestions)
         {
             <tr id="row_@item.ExamQuestionId">
-                <td>@item.ExamQuestionId</td>
-                <td>@item.QuestionId</td>
+                
+                
                 <td>@item.Question.QuestionText</td>
                 <td>@item.Question.DifficultyLevel</td>
                 <td>
@@ -89,7 +89,7 @@
     <div class="mb-3">
         <label for="questionText" class="form-label">Question Text</label>
         <select id="questionText" name="QuestionId" class="form-select" required>
-            <option value="">Select a Question Text</option>
+            <option value="">Select a Question  </option>
             @foreach (var question in ViewBag.Questions)
             {
                 <option value="@question.QuestionId">@question.QuestionText</option>

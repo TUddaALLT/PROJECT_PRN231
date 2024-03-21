@@ -74,6 +74,7 @@ namespace PROJECT_PRN231.Controllers
         public IActionResult Register([FromBody] Register registerModel)
         {
             var user = new User { Username = registerModel.Username, Role = registerModel.Role };
+            user.Role ="User";
             var userExisted = _userRepository.GetByUserName(user.Username);
             if (userExisted != null)
             {
