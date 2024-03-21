@@ -26,6 +26,14 @@
         <input type="text" id="Vvalue" name="Value" class="form-control" value="@Model.Value" required>
     </div>
 
+    <div class="mb-3">
+        <label for="isCorrect" class="form-label">Is Correct</label>
+        <select id="isCorrect" name="isCorrect" class="form-control" required>
+            <option id="true" value="true">True</option>
+            <option id="true" value="false">False</option>
+        </select>
+    </div>
+
     <button type="submit" class="btn btn-primary" onclick="showSuccessMessage()">Save</button>
     <button type="submit" class="btn btn-danger" asp-controller="Question" asp-action="Delete">Delete</button>
 </form>

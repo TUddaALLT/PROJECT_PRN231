@@ -1,5 +1,50 @@
 ﻿@model IEnumerable<PROJECT_PRN231.Models.ExamQuestion>
 
+<style>
+	/* Add this CSS to your stylesheet */
+
+	/* Container for the countdown and questions */
+	.exam-container {
+		margin-bottom: 20px;
+	}
+
+	/* Style the countdown */
+	#countdown {
+		font-size: 24px;
+		color: #007bff; /* Blue color for countdown */
+	}
+
+	/* Style the questions */
+	.question-container {
+		margin-bottom: 20px;
+		border: 1px solid #ced4da; /* Light gray border */
+		border-radius: 8px;
+		padding: 20px;
+		background-color: #f8f9fa; /* Light gray background */
+	}
+
+	.question {
+		margin-bottom: 10px;
+	}
+
+	/* Style the radio buttons */
+	input[type="radio"] {
+		margin-right: 5px;
+	}
+
+	/* Style the finish exam link */
+	.finish-exam-link {
+		display: block;
+		margin-top: 20px;
+		color: #007bff; /* Blue color for link */
+		text-decoration: none;
+		transition: color 0.3s ease;
+	}
+
+		.finish-exam-link:hover {
+			color: #0056b3; /* Darker blue color on hover */
+		}
+</style>
 @{
 	ViewData["Title"] = "Index";
 	int userId = Accessor.HttpContext.Session.GetInt32("UserId").Value;
@@ -7,51 +52,51 @@
 	int examTime = int.Parse(examTimeString);
 }
 
-<h1>Index</h1>
-
-<p>
-	Question
-</p>
-<div id="countdown">@examTime</div>
-@foreach (var item in Model)
-{
-	<div>
-		@Html.DisplayFor(modelItem => item.Question.QuestionText)
-		<form id="form1" runat="server">
-			<div>
-				@foreach (var answer in item.Question.Answers)
-				{
-					if (answer.UserExamQuestionAnswers.Count > 0)
-					{
-						<input type="radio"
-							   name="answer"
-							   value="@answer.AnswerId"
-							   data-questionId="@answer.QuestionId"
-							   data-examId="@Model.FirstOrDefault().ExamId"
-							   data-userId="@userId"
-							   data-isCorrect="@answer.IsCorrect"
-							   checked /> @answer.Value <br />
-					}
-					else
-					{
-						<input type="radio"
-							   name="answer"
-							   value="@answer.AnswerId"
-							   data-questionId="@answer.QuestionId"
-							   data-examId="@Model.FirstOrDefault().ExamId"
-							   data-userId="@userId"
-							   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
-					}
-
-
-				}
+<div class="exam-container">
+	<p>Question</p>
+	<div id="countdown">@examTime</div>
+	@foreach (var item in Model)
+	{
+		<div class="question-container">
+			<div class="question">
+				@Html.DisplayFor(modelItem => item.Question.QuestionText)
 			</div>
-		</form>
-	</div>
-}
-<div>
-	<a asp-action="FinishExam" asp-route-userId="@userId" asp-route-examId="@Model.FirstOrDefault().ExamId">Finish exam</a>
+			<form id="form1" runat="server">
+				<div>
+					@foreach (var answer in item.Question.Answers)
+					{
+						if (answer.UserExamQuestionAnswers.Count > 0)
+						{
+							<input type="radio"
+								   name="answer"
+								   value="@answer.AnswerId"
+								   data-questionId="@answer.QuestionId"
+								   data-examId="@Model.FirstOrDefault().ExamId"
+								   data-userId="@userId"
+								   data-isCorrect="@answer.IsCorrect"
+								   checked /> @answer.Value <br />
+						}
+						else
+						{
+							<input type="radio"
+								   name="answer"
+								   value="@answer.AnswerId"
+								   data-questionId="@answer.QuestionId"
+								   data-examId="@Model.FirstOrDefault().ExamId"
+								   data-userId="@userId"
+								   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
+						}
+					}
+				</div>
+			</form>
+		</div>
+	}
 </div>
+
+<div>
+	<a class="finish-exam-link" asp-action="FinishExam" asp-route-userId="@userId" asp-route-examId="@Model.FirstOrDefault().ExamId">Finish exam</a>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	$(document).ready(function () {
