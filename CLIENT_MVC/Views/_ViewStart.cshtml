@@ -5,11 +5,11 @@
 	{
 		Layout = "_Layout";
 	}
-	else if (role == "ADMIN")
+	else if (string.Equals(role,"ADMIN",StringComparison.OrdinalIgnoreCase))
 	{
 		Layout = "_AdminLayout";
 	}
-	else if (role == "USER")
+	else if (string.Equals(role, "USER", StringComparison.OrdinalIgnoreCase))
 	{
 		Layout = "_UserLayout";
 	}

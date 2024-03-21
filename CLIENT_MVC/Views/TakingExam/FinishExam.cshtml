@@ -5,7 +5,6 @@
 }
 <style>
     /* Add this CSS to your stylesheet */
-
     /* Style the container */
     .container {
         margin: 20px auto;
@@ -70,7 +69,7 @@
             <dt>User ID</dt>
             <dd>@Html.DisplayFor(model => model.UserId)</dd>
             <dt>Exam ID</dt>
-            <dd>@Html.DisplayFor(model => model.ExamId)</dd>
+            <dd>@Html.DisplayFor(model => model.Exam.ExamName)</dd>
             <dt>Score</dt>
             <dd>@Html.DisplayFor(model => model.Score)</dd>
             <dt>Start Time</dt>
