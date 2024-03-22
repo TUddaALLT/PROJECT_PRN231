@@ -11,7 +11,7 @@ namespace CLIENT_MVC.Utilities
 {
     public class APIHelper
     {
-        const string BaseUrl = "https://localhost:8080/api/";
+        const string BaseUrl = "http://prnproject.somee.com/api/";
         public string BearerToken { get; set; } = string.Empty;
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace PROJECT_PRN231.Controllers
             _examRepository = examRepository;
         }
 
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace PROJECT_PRN231.Controllers
 
         }
 
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
@@ -53,7 +53,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpGet("userId/{userId}")]
         public IActionResult GetByUser(int userId)
         {
@@ -69,7 +69,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPost]
         public IActionResult Create([FromBody] UserExamResultVM userExamResultVM)
         {
@@ -101,7 +101,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPut("{userId}/{examId}")]
         public IActionResult Update(int userId, int examId)
         {
@@ -118,12 +118,12 @@ namespace PROJECT_PRN231.Controllers
             var correctAnswers = examAnswers.Where(x => x.IsCorrect == true).Count();
             var answersCount = _examRepository.GetQuestionCount(pendingResult.ExamId.Value);
             pendingResult.Score = (10d / answersCount) * correctAnswers;
-			pendingResult.EndTime = DateTime.Now;
+            pendingResult.EndTime = DateTime.Now;
             if (!_userExamQuestionAnswerRepository.DeleteUserExamQuestionAnswer(examAnswers))
             {
-				ModelState.AddModelError("", "Something went wrong while deleting record");
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
+                ModelState.AddModelError("", "Something went wrong while deleting record");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             if (_userExamResultRepository.UpdateUserExamResult(pendingResult))
             {
                 return Ok(pendingResult);
@@ -135,7 +135,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
