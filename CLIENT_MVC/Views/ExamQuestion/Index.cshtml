@@ -109,7 +109,7 @@
         if (confirmDelete) {
             // Gửi yêu cầu xóa thông qua API sử dụng AJAX
             $.ajax({
-                url: 'https://localhost:8080/api/ExamQuestion/Delete/' + examQuestionId,
+                url: 'https://prnproject.somee.com/api/ExamQuestion/Delete/' + examQuestionId,
                 type: 'DELETE',
                 success: function (result) {
                     // Xóa hàng trong bảng sau khi xóa thành công

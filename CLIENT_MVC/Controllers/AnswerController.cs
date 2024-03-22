@@ -17,7 +17,7 @@ namespace CLIENT_MVC.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            BaseUrl = "https://localhost:8080/api/Answer";
+            BaseUrl = "https://prnproject.somee.com/api/Answer";
         }
 
         public async Task<IActionResult> List(int id)
@@ -112,7 +112,7 @@ namespace CLIENT_MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> AddToAll(int id)
         {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            HttpResponseMessage respone = await client.GetAsync("https://prnproject.somee.com/api/Question");
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

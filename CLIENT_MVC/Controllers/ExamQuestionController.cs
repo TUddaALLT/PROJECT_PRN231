@@ -17,14 +17,14 @@ namespace CLIENT_MVC.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            BaseUrl = "https://localhost:8080/api/ExamQuestion";
+            BaseUrl = "https://prnproject.somee.com/api/ExamQuestion";
         }
 
 
         public async Task<IActionResult> Index(int id)
         {
             HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/examId/{id}");
-            HttpResponseMessage responseQuestion = await client.GetAsync("https://localhost:8080/api/Question");
+            HttpResponseMessage responseQuestion = await client.GetAsync("https://prnproject.somee.com/api/Question");
             if (response.IsSuccessStatusCode && responseQuestion.IsSuccessStatusCode)
             {
                 string strData = await response.Content.ReadAsStringAsync();
@@ -82,7 +82,7 @@ namespace CLIENT_MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Add(int id)
         {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            HttpResponseMessage respone = await client.GetAsync("https://prnproject.somee.com/api/Question");
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

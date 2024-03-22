@@ -20,12 +20,12 @@ namespace CLIENT_MVC.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            BaseUrl = "https://localhost:8080/api/Question";
+            BaseUrl = "https://prnproject.somee.com/api/Question";
         }
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
+            HttpResponseMessage respone = await client.GetAsync("https://prnproject.somee.com/api/Question");
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

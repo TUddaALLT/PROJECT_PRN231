@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PROJECT_PRN231.Interface;
@@ -17,6 +18,8 @@ namespace PROJECT_PRN231.Controllers
         {
             _ExamRepository = examRepository;
         }
+
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -29,6 +32,8 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpGet("id")]
         public IActionResult Get(int id)
         {
@@ -46,6 +51,8 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize(Roles = "ADMIN")]
         [HttpPost("Add")]
         public IActionResult Create(ExamVM exam)
         {
@@ -58,6 +65,8 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("Update/{id}")]
         public ActionResult Update(int id, Exam exam)
         {
@@ -76,6 +85,8 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
+
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {

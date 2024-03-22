@@ -139,7 +139,7 @@
         var confirmDelete = confirm("Are you sure to delete this Exam?");
         if (confirmDelete) {
             // Gửi yêu cầu xóa thông qua API
-            fetch(`https://localhost:8080/api/Exam/Delete/${examId}`, {
+            fetch(`https://prnproject.somee.com/api/Exam/Delete/${examId}`, {
                 method: 'DELETE'
             })
                 .then(response => {

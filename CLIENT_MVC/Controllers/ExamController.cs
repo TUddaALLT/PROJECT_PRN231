@@ -17,12 +17,12 @@ namespace CLIENT_MVC.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            BaseUrl = "https://localhost:8080/api/Exam";
+            BaseUrl = "https://prnproject.somee.com/api/Exam";
         }
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Exam");
+            HttpResponseMessage respone = await client.GetAsync("https://prnproject.somee.com/api/Exam");
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -43,7 +43,7 @@ namespace CLIENT_MVC.Controllers
         public async Task<IActionResult> ListAllQuestion(int? id)
         {
             HttpResponseMessage respone = await
-                client.GetAsync("https://localhost:8080/api/Question/GetAllByExamId?id=" + id);
+                client.GetAsync("https://prnproject.somee.com/api/Question/GetAllByExamId?id=" + id);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -62,7 +62,7 @@ namespace CLIENT_MVC.Controllers
             var json = System.Text.Json.JsonSerializer.Serialize(examQuestion);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await client.PostAsync("https://localhost:8080/api/ExamQuestion", content);
+            HttpResponseMessage response = await client.PostAsync("https://prnproject.somee.com/api/ExamQuestion", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -142,7 +142,7 @@ namespace CLIENT_MVC.Controllers
 
                 // Sử dụng đường dẫn API cho việc cập nhật câu hỏi
                 //HttpResponseMessage response = await client.PutAsync(BaseUrl + "/Update/" + exam.ExamId, content);
-                HttpResponseMessage response = await client.PutAsync("https://localhost:8080/api/Exam/Update/" + exam.ExamId, content);
+                HttpResponseMessage response = await client.PutAsync("https://prnproject.somee.com/api/Exam/Update/" + exam.ExamId, content);
 
                 if (response.IsSuccessStatusCode)
                 {

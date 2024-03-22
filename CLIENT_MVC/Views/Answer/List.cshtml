@@ -29,7 +29,7 @@
                             <td>@item.Value</td>
                             <td>@item.IsCorrect</td>
                             <td>
-                                <a href="https://localhost:7284/Answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
+                                <a href="/Answer/Update/@item.AnswerId"><button class="btn btn-primary">Update</button></a>
                                 <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
                             </td>
                         </tr>
@@ -71,7 +71,7 @@
         var confirmDelete = confirm("Are you sure to delete this answer?");
         if (confirmDelete) {
             // Gửi yêu cầu xóa thông qua API
-            fetch(`https://localhost:8080/api/Answer/Delete/${answerId}`, {
+            fetch(`https://prnproject.somee.com/api/Answer/Delete/${answerId}`, {
                 method: 'DELETE'
             })
                 .then(response => {

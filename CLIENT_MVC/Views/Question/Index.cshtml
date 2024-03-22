@@ -53,7 +53,7 @@
         var confirmDelete = confirm("Are you sure to delete this question?");
         if (confirmDelete) {
             // Gửi yêu cầu xóa thông qua API
-            fetch(`https://localhost:8080/api/Question/Delete/${questionId}`, {
+            fetch(`https://prnproject.somee.com/api/Question/Delete/${questionId}`, {
                 method: 'DELETE'
             })
                 .then(response => {
