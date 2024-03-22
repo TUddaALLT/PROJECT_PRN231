@@ -10,7 +10,7 @@
         <div>
             <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
-            <a href="answer/Add" id="addButton" class="btn btn-primary">Add</a>
+            <a href="answer/AddToAll" id="addButton" class="btn btn-primary">Add</a>
         </div>
         <div>
             <select id="sortSelect">
@@ -30,12 +30,14 @@
             </thead>
             <tbody id="answerTableBody">
                 @{
-                    int previousQuestionId = -1; // Giá trị ban đầu để đảm bảo rằng sẽ không có questionId nào trùng khớp
+                    // Giá trị ban đầu để đảm bảo rằng không có questionId nào trùng khớp
+                    int previousQuestionId = -1;
                 }
+
                 @if (ViewBag.Answers == null || ViewBag.Answers.Count == 0)
                 {
                     <tr>
-                        <td colspan="4"><h1>Danh sách đáp án rỗng</h1></td>
+                        <td colspan="4"><h2>Danh sách đáp án rỗng</h2></td>
                     </tr>
                 }
                 else
@@ -47,7 +49,7 @@
                         {
                             <tr id="row_@item.AnswerId">
                                 <td>@item.AnswerId</td>
-                                <th>@item.QuestionId</th>
+                                <td>@item.QuestionId</td>                               
                                 <td>@item.Value</td>
                                 <td>@item.IsCorrect</td>
                                 <td>
@@ -55,14 +57,13 @@
                                     <button class="btn btn-danger" onclick="deleteQuestion('@item.AnswerId')">Delete</button>
                                 </td>
                             </tr>
-                            previousQuestionId = item.QuestionId; // Cập nhật giá trị của QuestionId trước đó
                         }
                         else
                         {
-                            // Nếu QuestionId giống nhau, chỉ in ra Value và IsCorrect
+                            // Nếu QuestionId giống nhau, chỉ in ra các cột còn lại và để cột QuestionId trống
                             <tr id="row_@item.AnswerId">
+                                <td>@item.AnswerId</td>
                                 <td></td>
-                                <td></td> <!-- Để trống cột QuestionId -->
                                 <td>@item.Value</td>
                                 <td>@item.IsCorrect</td>
                                 <td>
@@ -71,9 +72,13 @@
                                 </td>
                             </tr>
                         }
+
+                        // Cập nhật giá trị của QuestionId trước đó
+                        previousQuestionId = item.QuestionId;
                     }
                 }
             </tbody>
+
         </table>
     </div>
 </div>
@@ -149,4 +154,5 @@
             sortById();
         }
     });
+
 </script>

@@ -33,9 +33,9 @@
                 @foreach (var item in ViewBag.Questions)
                 {
                     <tr id="row_@item.QuestionId">
-                        <th>@item.QuestionId</th>
-                        <th>@item.QuestionText</th>
-                        <th>@item.DifficultyLevel</th>
+                        <td>@item.QuestionId</td>
+                        <td>@item.QuestionText</td>
+                        <td>@item.DifficultyLevel</td>
                         <td>
                             <a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a>
                             <a href="answer/List/@item.QuestionId"><button class="btn btn-danger">Manage Answer</button></a>
