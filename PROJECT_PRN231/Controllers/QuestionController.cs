@@ -19,7 +19,7 @@ namespace PROJECT_PRN231.Controllers
             QuestionRepository = questionRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -32,6 +32,8 @@ namespace PROJECT_PRN231.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
         [HttpGet("GetAllByExamId")]
         public IActionResult GetAllByExamId(int? id)
         {

@@ -48,6 +48,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
+
         [HttpGet("examId/{examId}")]
         public IActionResult GetByExamId(int examId)
         {

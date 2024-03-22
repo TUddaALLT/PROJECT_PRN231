@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PROJECT_PRN231.Interface;
 using PROJECT_PRN231.Models;
 using PROJECT_PRN231.Models.ViewModel;
@@ -15,7 +16,8 @@ namespace PROJECT_PRN231.Controllers
             _userExamQuestionAnswerRepository = userExamQuestionAnswerRepository;
         }
 
-        [HttpGet]
+		[Authorize(Roles = "ADMIN")]
+		[HttpGet]
         public IActionResult GetAll()
         {
             var list = _userExamQuestionAnswerRepository.GetAll();
@@ -26,7 +28,7 @@ namespace PROJECT_PRN231.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         [HttpPost("SelectAnswer")]
         public IActionResult SelectAnswer([FromBody]UserExamQuestionAnswerVM viewModel)
         {
