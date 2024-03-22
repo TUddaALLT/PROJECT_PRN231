@@ -4,11 +4,11 @@
 @{
 }
 
-<h2>Edit Exam</h2>
+<h2>Edit Exam @Model.ExamId</h2>
 
 <form method="post" action="Update" class="mt-5" id="updateExam">
     <!-- Input hidden để giữ ID của câu hỏi -->
-    <div class="mb-3">
+    <div class="mb-3" hidden>
         <label for="examId" class="form-label">Exam Id</label>
         <!-- Hiển thị trường QuestionText của đối tượng Question -->
         <input id="examId" name="ExamId" class="form-control" value="@Model.ExamId" readonly>

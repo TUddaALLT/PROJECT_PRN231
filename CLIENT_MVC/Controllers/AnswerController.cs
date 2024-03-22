@@ -39,12 +39,44 @@ namespace CLIENT_MVC.Controllers
                 }
                 else
                 {
+                    ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                     return View();
                 }
             }
             else
             {
+                ViewBag.QuestionId = id; // Truyền QuestionId qua ViewBag
                 return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> List(Answer answer)
+        {
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(answer);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(BaseUrl + "/Add", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
+                }
+                else
+                {
+                    Console.WriteLine(response);
+                    // Xử lý lỗi nếu cần
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý exception nếu cần
+                return View("Error");
             }
         }
 
@@ -76,9 +108,9 @@ namespace CLIENT_MVC.Controllers
             }
         }
 
-
+        //Add to list All
         [HttpGet]
-        public async Task<IActionResult> Add(int id)
+        public async Task<IActionResult> AddToAll(int id)
         {
             HttpResponseMessage respone = await client.GetAsync("https://localhost:8080/api/Question");
             string strData = await respone.Content.ReadAsStringAsync();
@@ -92,6 +124,7 @@ namespace CLIENT_MVC.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Add(Answer answer)
         {
@@ -104,7 +137,9 @@ namespace CLIENT_MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
                 }
                 else
                 {
@@ -161,7 +196,9 @@ namespace CLIENT_MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Lấy URL của trang hiện tại và redirect đến nó
+                    string currentUrl = Request.Headers["Referer"].ToString();
+                    return Redirect(currentUrl);
                 }
                 else
                 {
