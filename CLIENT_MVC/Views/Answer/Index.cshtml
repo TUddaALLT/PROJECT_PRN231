@@ -12,18 +12,18 @@
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
             <a href="answer/AddToAll" id="addButton" class="btn btn-primary">Add</a>
         </div>
-        <div>
+@*         <div>
             <select id="sortSelect">
                 <option value="sort">Sort</option>
                 <option value="id">Sort by Question Id</option>
             </select>
-        </div>
+        </div> *@
         <table class="table" id="answerTable">
             <thead>
                 <tr>
                     <th>Answer Id</th>
                     <th>Question Id</th>
-                    <th>Value</th>
+                    <th>Answers</th>
                     <th>Is Correct</th>
                     <th>Service</th>
                 </tr>
@@ -49,7 +49,7 @@
                         {
                             <tr id="row_@item.AnswerId">
                                 <td>@item.AnswerId</td>
-                                <td>@item.QuestionId</td>                               
+                                <th>@item.QuestionId</th>                               
                                 <td>@item.Value</td>
                                 <td>@item.IsCorrect</td>
                                 <td>
@@ -106,20 +106,31 @@
     }
 
     //search
-    // Function to handle search by name
     function searchByName() {
-        var searchValue = document.getElementById("searchInput").value.toLowerCase();
-        var rows = document.querySelectorAll("#answerTableBody tr");
+        var searchValue = document.getElementById('searchInput').value.toLowerCase();
 
-        rows.forEach(row => {
-            var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
-            if (questionText.includes(searchValue)) {
-                row.style.display = "table-row";
-            } else {
-                row.style.display = "none";
+        var rows = document.getElementById('answerTableBody').getElementsByTagName('tr');
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td'); // Lấy tất cả các ô trong hàng
+
+            // Duyệt qua từng ô trong hàng
+            var found = false;
+            for (var j = 0; j < cells.length; j++) {
+                var cellValue = cells[j].innerText.toLowerCase(); // Lấy giá trị của ô và chuyển về chữ thường
+
+                if (cellValue.indexOf(searchValue) > -1) {
+                    found = true;
+                    break; 
+                }
             }
-        });
+            if (found) {
+                rows[i].style.display = ''; // Hiển thị hàng nếu tìm thấy kết quả
+            } else {
+                rows[i].style.display = 'none'; // Ẩn hàng nếu không tìm thấy kết quả
+            }
+        }
     }
+
 
     function sortById() {
         var table = document.getElementById("answerTable");

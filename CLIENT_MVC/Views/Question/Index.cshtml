@@ -13,13 +13,13 @@
             <button class="btn btn-primary" onclick="searchByName()">Search</button>
             <a href="question/Add"><button class="btn btn-primary">Add</button></a>
         </div>
-        <div>
+@*         <div>
             <select id="sortSelect">
                 <option value="sort">Sort</option>
                 <option value="name">Sort by Name</option>
                 <option value="id">Sort by Id</option>
             </select>
-        </div>
+        </div> *@
         <table class="table" id="questionTable">
             <thead>
                 <tr>
@@ -70,21 +70,39 @@
         }
     }
 
-    //search
-    // Function to handle search by name
     function searchByName() {
-        var searchValue = document.getElementById("searchInput").value.toLowerCase();
-        var rows = document.querySelectorAll("#questionTableBody tr");
+        // Lấy giá trị nhập vào từ ô input
+        var searchValue = document.getElementById('searchInput').value.toLowerCase();
 
-        rows.forEach(row => {
-            var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
-            if (questionText.includes(searchValue)) {
-                row.style.display = "table-row";
-            } else {
-                row.style.display = "none";
+        // Lấy tất cả các hàng trong bảng dữ liệu
+        var rows = document.getElementById('questionTableBody').getElementsByTagName('tr');
+
+        // Duyệt qua từng hàng trong bảng dữ liệu
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td'); // Lấy tất cả các ô trong hàng
+
+            // Duyệt qua từng ô trong hàng
+            var found = false;
+            for (var j = 0; j < cells.length; j++) {
+                var cellValue = cells[j].innerText.toLowerCase(); // Lấy giá trị của ô và chuyển về chữ thường
+
+                // Kiểm tra xem giá trị của ô có chứa giá trị tìm kiếm không
+                if (cellValue.indexOf(searchValue) > -1) {
+                    found = true; // Nếu tìm thấy, đặt found thành true
+                    break; // Thoát khỏi vòng lặp vì đã tìm thấy
+                }
             }
-        });
+
+            // Ẩn hoặc hiển thị hàng tùy thuộc vào việc tìm thấy kết quả hay không
+            if (found) {
+                rows[i].style.display = ''; // Hiển thị hàng nếu tìm thấy kết quả
+            } else {
+                rows[i].style.display = 'none'; // Ẩn hàng nếu không tìm thấy kết quả
+            }
+        }
     }
+
+
 
     //sortByName
     function sortByName() {

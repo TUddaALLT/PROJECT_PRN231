@@ -69,13 +69,13 @@
                 }
     </style>
 </head>
+
+<h2>List Exam</h2>
 <body>
     <div class="container">
         <div class="row justify-content-center">
             <div class="search-container">
                 <div>
-                @*     <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
-                    <button class="btn btn-primary" onclick="searchByName()">Search</button> *@
 
                     @{
                         string? username = Accessor.HttpContext.Session.GetString("Username");
@@ -119,7 +119,6 @@
                                         <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
                                     } 
                                 }
-
                                 
                               
                             </td>
