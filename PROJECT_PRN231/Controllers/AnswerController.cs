@@ -18,7 +18,7 @@ namespace PROJECT_PRN231.Controllers
             AnswerRepository = answerRepository;
         }
 
-        [Authorize(Roles = "ADMIN,USER")]
+        
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -32,7 +32,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "ADMIN,USER")]
+        
         [HttpGet("id")]
         public IActionResult Get(int id)
         {
@@ -51,7 +51,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "ADMIN,USER")]
+        
         [HttpGet("GetByQuestionId/id")]
         public IActionResult GetByQuestionId(int id)
         {
@@ -70,7 +70,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "ADMIN")]
+        
         [HttpPost("Add")]
         public IActionResult Create(AnswerVM answerVM)
         {
@@ -84,7 +84,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "ADMIN")]
+        
         [HttpPut("Update/{id}")]
         public ActionResult Update(int id, AnswerVM answerVM)
         {
@@ -99,7 +99,7 @@ namespace PROJECT_PRN231.Controllers
             }
         }
 
-        [Authorize(Roles = "ADMIN")]
+        
         [HttpDelete("Delete/{id}")]
         public ActionResult Delete(int id)
         {
